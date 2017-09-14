@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">sTour</string>
+    <string name="home">Trang chủ</string>
+    <string name="datcho">Bản đồ</string>
+    <string name="info">Thông báo</string>
+    <string name="account">Tài khoản</string>
+    <string name="more">More</string>
+
+    <string name="des">A Dreamhouse With a Prime Location -
+        This vacation getaway is centrally located in an upscale neighborhood and is
+        only a short drive from everything. Located on a large lot, this home has
+        many great amenities to offer such as a game room with three game tables,
+        open-beam vaulted ceilings, a unique kitchen, a spacious back deck with
+        a propane BBQ and wireless internet.</string>
+    <string name="rate1">4.3</string>
+
+    <string name="reviews">Reviews</string>
+
+    <string name="func1">Định tuyến và dẫn đường thông minh</string>
+
+    <string name="func2">Tự động phát hiện tiếp cận và hỗ trợ tự động lộ trình</string>
+
+    <string name="funct3">Di tích lịch sử</string>
+
+    <string name="funct4">Lễ hội văn hóa</string>
+
+    <string name="funct5">Văn hóa ẩm thực</string>
+    <string name="great">Wonderful!</string>
+    <string name="addr">Address</string>
+    <string name="sdt">Phone</string>
+    <string name="phone">84 912 636 939</string>
+    <string name="exit_confirm">Ấn quay lại lần nữa để thoát ứng dụng</string>
+    <string name="address">18 Phan Boi Chau | Hoan Kiem District, Ha Noi, Viet Nam</string>
+
+    <string name="getnews">Đăng ký nhận bản tin</string>
+    <string name="help">Trợ giúp</string>
+    <string name="config">Cài đặt</string>
+    <string name="view">10 Reviews</string>
+    <string name="km">6,6 km</string>
+
+    <string name="post">POSTCARD</string>
+    <string name="bookmark">BOOKMARK</string>
+    <string name="share">SHARE</string>
+
+    <string name="nointernet">Không có kết nối internet!!!</string>
+    <string name="ok">OK</string>
+
+    <string name="vanhoa">Văn hóa ẩm thực</string>
+    <string name="lehoi">Lễ hội văn hóa</string>
+    <string name="ditich">Di tích lịch sử</string>
+
+    <string name="hotel">Khách sạn</string>
+    <string name="restaurant">Nhà hàng</string>
+
+    <string name="rate">Rate this place</string>
+    <string name="title_activity_maps">Map</string>
+</resources>

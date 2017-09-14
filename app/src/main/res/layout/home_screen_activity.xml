@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ddd" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:weightSum="4">
+
+            <RelativeLayout
+                android:id="@+id/tab_home"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/bot_menu_padding">
+
+                <ImageView
+                    android:id="@+id/iv_menu_home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:tint="@color/menu_enable" />
+
+                <TextView
+                    android:id="@+id/tv_menu_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_menu_home"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/bot_menu_padding"
+                    android:text="@string/home"
+                    android:textColor="@color/menu_enable"
+                    android:textSize="@dimen/bot_menu_text" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/tab_datcho"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/bot_menu_padding">
+
+                <ImageView
+                    android:id="@+id/iv_menu_datcho"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_map"
+                    android:tint="@color/menu_disable" />
+
+                <TextView
+                    android:id="@+id/tv_menu_datcho"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_menu_datcho"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/bot_menu_padding"
+                    android:text="@string/datcho"
+                    android:textColor="@color/menu_disable"
+                    android:textSize="@dimen/bot_menu_text" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/tab_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/bot_menu_padding">
+
+
+                <ImageView
+                    android:id="@+id/iv_menu_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_error_white_24dp"
+                    android:tint="@color/menu_disable" />
+
+
+                <TextView
+                    android:id="@+id/tv_menu_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_menu_info"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/bot_menu_padding"
+                    android:text="@string/info"
+                    android:textColor="@color/menu_disable"
+                    android:textSize="@dimen/bot_menu_text" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/tab_account"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingTop="@dimen/bot_menu_padding">
+
+
+                <ImageView
+                    android:id="@+id/iv_menu_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/ic_more_horiz_white_24dp"
+                    android:tint="@color/menu_disable" />
+
+
+                <TextView
+                    android:id="@+id/tv_menu_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_menu_account"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/bot_menu_padding"
+                    android:text="@string/more"
+                    android:textColor="@color/menu_disable"
+                    android:textSize="@dimen/bot_menu_text" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</TabHost>

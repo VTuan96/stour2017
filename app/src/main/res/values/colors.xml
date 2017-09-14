@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="menu_disable">#cfcfcf</color>
+    <color name="menu_enable">#3498db</color>
+    <color name="text_detail">#343c45</color>
+    <color name="text_detail_normal">#b4babf</color>
+    <!--// color splash screen-->
+    <color name="splashbackgroudcolor">#3498db</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000</color>
+    <color name="gray">#f4f3f3</color>
+    <color name="background_main">#e6e9eb</color>
+    <color name="text_main">#424242</color>
+    <color name="placecolor">#245f9e</color>
+    <color name="placecolor1">#ff6161</color>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bot_menu_ico_height">27dp</dimen>
+    <dimen name="bot_menu_padding">5dp</dimen>
+    <dimen name="bot_menu_text">11sp</dimen>
+    <dimen name="text_cate">14sp</dimen>
+    <dimen name="stour_text">10sp</dimen>
+    <dimen name="width_img">220dp</dimen>
+    <dimen name="height_img">120dp</dimen>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:icon="@drawable/ic_more_vert_white_24dp"
+        android:title="@string/app_name"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/itgetNews"
+                android:title="@string/getnews" />
+
+            <item
+                android:id="@+id/itHelp"
+                android:title="@string/help" />
+            <item
+                android:id="@+id/itConfig"
+                android:title="@string/config" />
+
+        </menu>
+
+    </item>
+
+</menu>

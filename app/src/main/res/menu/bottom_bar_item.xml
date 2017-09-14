@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:bbn_itemAnimationDuration="200"
+    app:bbn_itemColorActive="@color/splashbackgroudcolor"
+    app:bbn_itemColorInactive="#AA000000"
+    app:bbn_rippleColor="#ccffffff">
+
+    <item
+        android:id="@+id/btHome"
+        android:color="@android:color/white"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/btPlace"
+        android:color="@android:color/white"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="@string/datcho" />
+    <item
+        android:id="@+id/btInfo"
+        android:color="@android:color/white"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="@string/info" />
+    <item
+        android:id="@+id/btAccount"
+        android:color="@android:color/white"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="@string/account" />
+
+</menu>
