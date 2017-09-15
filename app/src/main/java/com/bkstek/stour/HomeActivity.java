@@ -24,8 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bkstek.stour.adapter.AdapterCategory;
@@ -141,7 +143,7 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     //region get all category
     private void GetAllCategory() {
-        final ProgressDialog dialog = ProgressDialog.show(context,"","Vui lòng đợi...");
+        final ProgressDialog dialog = ProgressDialog.show(context, "", "Vui lòng đợi...");
 
         categoryList = new ArrayList<>();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, GET_ALL_CATEGORY,
@@ -176,6 +178,11 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                 Log.d("error", "connect get cate " + error.toString());
             }
         });
+
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
 
         VolleySingleton.getInstance(context).addToRequestQueue(request);
 
