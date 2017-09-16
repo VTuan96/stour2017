@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,7 +64,7 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
     Toolbar toolbar;
     ViewPager vpSlides;
     RecyclerView recyclerCate, recyclerHotel, recyclerRes;
-
+    SwipeRefreshLayout swRefresh;
     Context context;
 
     Menu menu;
@@ -98,13 +99,14 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
         cvCultural = (CardView) findViewById(R.id.cvCultural);
         recyclerHotel = (RecyclerView) findViewById(R.id.recyclerHotel);
         recyclerRes = (RecyclerView) findViewById(R.id.recyclerRes);
+        swRefresh = (SwipeRefreshLayout) findViewById(R.id.swRefresh);
 
         context = HomeActivity.this;
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-
+        swRefresh.setColorSchemeResources(R.color.splashbackgroudcolor);
         if (FunctionHelper.isNetworkConnected(context)) {
             GetBanner();
             GetAllCategory();
@@ -140,12 +142,29 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        swRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swRefresh.setColorSchemeResources(R.color.splashbackgroudcolor);
+                GetBanner();
+                GetAllCategory();
+                GetAllHotel();
+                GetAllRestaurant();
+                swRefresh.setRefreshing(false);
+            }
+        });
+    }
 
     //region get all category
     private void GetAllCategory() {
         final ProgressDialog dialog = ProgressDialog.show(context, "", "Vui lòng đợi...");
 
         categoryList = new ArrayList<>();
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, GET_ALL_CATEGORY,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -220,6 +239,7 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     private void GetBanner() {
+        bannerList.clear();
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, CommonDefine.GET_BANNER,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -245,6 +265,11 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                 Log.d("error", "connect get banner " + error.toString());
             }
         });
+
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        objectRequest.setRetryPolicy(policy);
         VolleySingleton.getInstance(context).addToRequestQueue(objectRequest);
     }
 
@@ -273,6 +298,7 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
     //region get all hotel
     private void GetAllHotel() {
         final List<History> historyListHotel = new ArrayList<>();
+        historyListHotel.clear();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, GET_ALL_HOTEL,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -305,6 +331,11 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                 Log.d("error", "connect get hotel " + error.toString());
             }
         });
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
+
         VolleySingleton.getInstance(context).addToRequestQueue(request);
 
     }
@@ -313,6 +344,7 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
     //region get all restaurant
     private void GetAllRestaurant() {
         final List<History> historyListRes = new ArrayList<>();
+        historyListRes.clear();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, GET_ALL_RESTAURANT,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -345,6 +377,11 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                 Log.d("error", "connect get res " + error.toString());
             }
         });
+        int socketTimeout = 30000;//30 seconds - change to what you want
+        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
+
         VolleySingleton.getInstance(context).addToRequestQueue(request);
 
     }

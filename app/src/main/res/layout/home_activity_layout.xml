@@ -20,258 +20,265 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nesScroll"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/appbar"
-        android:background="@color/background_main">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appbar">
 
-        <RelativeLayout
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nesScroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:background="@color/background_main">
 
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vpSlides"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp" />
-
-            <LinearLayout
-                android:id="@+id/lnDots"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
-                android:gravity="center"
-                android:orientation="horizontal" />
-
-            <LinearLayout
-                android:id="@+id/lnFirst"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="105dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/cdFindFlight"
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vpSlides"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_conner_image"
-                    app:cardElevation="1dp">
+                    android:layout_height="120dp" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="-20dp"
-                        android:src="@drawable/ic_map_white_24dp"
-                        android:tint="@color/menu_enable" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="50dp"
-                        android:gravity="center"
-                        android:text="@string/func1"
-                        android:textColor="@color/text_main"
-                        android:textSize="11sp" />
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/cdFindHoltel"
+                <LinearLayout
+                    android:id="@+id/lnDots"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_conner_image"
-                    app:cardElevation="1dp">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="80dp"
+                    android:gravity="center"
+                    android:orientation="horizontal" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="-20dp"
-                        android:src="@drawable/ic_person_pin_white_24dp"
-                        android:tint="@color/placecolor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="50dp"
-                        android:gravity="center"
-                        android:text="@string/func2"
-                        android:textColor="@color/text_main"
-                        android:textSize="11sp" />
-
-                </android.support.v7.widget.CardView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/lnSecond"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/lnFirst"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="9dp"
-                android:orientation="horizontal">
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/cvHistory"
+                <LinearLayout
+                    android:id="@+id/lnFirst"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="0.3"
-                    android:background="@drawable/border_conner_image"
-                    app:cardElevation="1dp">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/vpSlides"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="-20dp"
-                        android:src="@drawable/ic_local_activity_white_24dp"
-                        android:tint="@color/placecolor" />
 
-                    <TextView
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cdFindFlight"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="50dp"
-                        android:gravity="center"
-                        android:text="@string/funct3"
-                        android:textColor="@color/text_main"
-                        android:textSize="11sp" />
-                </android.support.v7.widget.CardView>
+                        android:layout_height="90dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_conner_image"
+                        app:cardElevation="1dp">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/cvCultural"
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="-20dp"
+                            android:src="@drawable/ic_map_white_24dp"
+                            android:tint="@color/menu_enable" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:gravity="center"
+                            android:text="@string/func1"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cdFindHoltel"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_conner_image"
+                        app:cardElevation="1dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="-20dp"
+                            android:src="@drawable/ic_person_pin_white_24dp"
+                            android:tint="@color/placecolor" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:gravity="center"
+                            android:text="@string/func2"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnSecond"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="0.3"
-                    android:background="@drawable/border_conner_image"
-                    app:cardElevation="1dp">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lnFirst"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="9dp"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="-20dp"
-                        android:src="@drawable/ic_local_florist_black_24dp"
-                        android:tint="@color/menu_enable" />
-
-                    <TextView
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cvHistory"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="50dp"
-                        android:gravity="center"
-                        android:text="@string/funct4"
-                        android:textColor="@color/text_main"
-                        android:textSize="11sp" />
+                        android:layout_height="90dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="0.3"
+                        android:background="@drawable/border_conner_image"
+                        app:cardElevation="1dp">
 
-                </android.support.v7.widget.CardView>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="-20dp"
+                            android:src="@drawable/ic_local_activity_white_24dp"
+                            android:tint="@color/placecolor" />
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/cvFood"
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:gravity="center"
+                            android:text="@string/funct3"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cvCultural"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="0.3"
+                        android:background="@drawable/border_conner_image"
+                        app:cardElevation="1dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="-20dp"
+                            android:src="@drawable/ic_local_florist_black_24dp"
+                            android:tint="@color/menu_enable" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:gravity="center"
+                            android:text="@string/funct4"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cvFood"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginEnd="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="0.3"
+                        android:background="@drawable/border_conner_image"
+                        app:cardElevation="1dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="-20dp"
+                            android:src="@drawable/ic_restaurant_white_24dp"
+                            android:tint="@color/placecolor1" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:gravity="center"
+                            android:text="@string/funct5"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerCate"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="0.3"
-                    android:background="@drawable/border_conner_image"
-                    app:cardElevation="1dp">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lnSecond"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="-20dp"
-                        android:src="@drawable/ic_restaurant_white_24dp"
-                        android:tint="@color/placecolor1" />
+                <TextView
+                    android:id="@+id/txtHotel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/recyclerCate"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/hotel"
+                    android:textColor="@color/text_main"
+                    android:textSize="@dimen/text_cate"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="50dp"
-                        android:gravity="center"
-                        android:text="@string/funct5"
-                        android:textColor="@color/text_main"
-                        android:textSize="11sp" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerHotel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtHotel"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp" />
 
-                </android.support.v7.widget.CardView>
+                <TextView
+                    android:id="@+id/txtRes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/recyclerHotel"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/restaurant"
+                    android:textColor="@color/text_main"
+                    android:textSize="@dimen/text_cate"
+                    android:textStyle="bold" />
 
-            </LinearLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerRes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtRes"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerCate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/lnSecond"
-                android:layout_marginBottom="20dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp" />
-
-            <TextView
-                android:id="@+id/txtHotel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/recyclerCate"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:text="@string/hotel"
-                android:textColor="@color/text_main"
-                android:textSize="@dimen/text_cate"
-                android:textStyle="bold" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerHotel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtHotel"
-                android:layout_marginBottom="20dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp" />
-
-            <TextView
-                android:id="@+id/txtRes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/recyclerHotel"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:text="@string/restaurant"
-                android:textColor="@color/text_main"
-                android:textSize="@dimen/text_cate"
-                android:textStyle="bold" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerRes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtRes"
-                android:layout_marginBottom="20dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp" />
-
-        </RelativeLayout>
+            </RelativeLayout>
 
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>
