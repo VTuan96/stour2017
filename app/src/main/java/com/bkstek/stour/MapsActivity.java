@@ -3,12 +3,15 @@ package com.bkstek.stour;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.bkstek.stour.mapdigital.TileProviderFactory;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -22,6 +25,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+    }
+
+    private void setUpMap() {
+        TileProvider tileProvider = TileProviderFactory.getTileProvider();
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
     }
 
 
@@ -43,7 +53,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mMap.setMinZoomPreference(18);
 //        mMap.setMaxZoomPreference(21);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Thư viện Tạ Quang Bửu"));
-      //  mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(21.004508, 105.844160) , 14.0f) );
+        //  mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.004508, 105.844160), 16.0f));
+
+        if (mMap != null) {
+            setUpMap();
+        }
     }
 }
