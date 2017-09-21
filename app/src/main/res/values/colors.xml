@@ -12,6 +12,7 @@
     <color name="white">#ffffff</color>
     <color name="black">#000</color>
     <color name="gray">#f4f3f3</color>
+    <color name="background_map">#4487f2</color>
     <color name="background_main">#e6e9eb</color>
     <color name="text_main">#424242</color>
     <color name="placecolor">#245f9e</color>
