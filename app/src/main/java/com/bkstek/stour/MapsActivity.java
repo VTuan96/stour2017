@@ -13,6 +13,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
+import static com.bkstek.stour.util.CommonDefine.GEOSERVER_FORMAT;
+import static com.bkstek.stour.util.CommonDefine.WMS_FORMAT_STRING;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -30,8 +33,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setUpMap() {
-        TileProvider tileProvider = TileProviderFactory.getTileProvider();
+        TileProvider tileProvider = TileProviderFactory.getTileProvider(GEOSERVER_FORMAT);
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
+
+        TileProvider tileProvider_route = TileProviderFactory.getTileProvider(WMS_FORMAT_STRING);
+        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider_route));
     }
 
 
