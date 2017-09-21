@@ -2,6 +2,7 @@ package com.bkstek.stour;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.bkstek.stour.mapdigital.TileProviderFactory;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +29,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        addMapEvents();
 
 
     }
@@ -38,6 +40,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         TileProvider tileProvider_route = TileProviderFactory.getTileProvider(WMS_FORMAT_STRING);
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider_route));
+
+
+    }
+
+    private void addMapEvents() {
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng position) {
+                Toast.makeText(getApplicationContext(), position.latitude + " : " + position.longitude, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
@@ -66,4 +79,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             setUpMap();
         }
     }
+
+
 }

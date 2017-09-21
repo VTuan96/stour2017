@@ -11,7 +11,7 @@ import java.util.Locale;
  */
 
 public class TileProviderFactory {
-    
+
     // return a geoserver wms tile layer
     public static TileProvider getTileProvider(final String str) {
         TileProvider tileProvider = new WMSTileProvider(768, 427) {
