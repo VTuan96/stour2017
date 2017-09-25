@@ -119,16 +119,16 @@ public class HomeScreenActivity extends TabActivity implements View.OnClickListe
         tv_menu_account.setTextColor(context.getResources().getColor(
                 R.color.menu_disable));
 
-        iv_menu_home.setImageResource(R.drawable.ic_home_white_24dp);
+        iv_menu_home.setImageResource(R.drawable.ic_home2);
         iv_menu_home.setColorFilter(context.getResources().getColor(R.color.menu_disable));
 
-        iv_menu_datcho.setImageResource(R.drawable.ic_map);
+        iv_menu_datcho.setImageResource(R.drawable.ic_map2);
         iv_menu_datcho.setColorFilter(context.getResources().getColor(R.color.menu_disable));
 
-        iv_menu_info.setImageResource(R.drawable.ic_error_white_24dp);
+        iv_menu_info.setImageResource(R.drawable.ic_info);
         iv_menu_info.setColorFilter(context.getResources().getColor(R.color.menu_disable));
 
-        iv_menu_account.setImageResource(R.drawable.ic_more_horiz_white_24dp);
+        iv_menu_account.setImageResource(R.drawable.ic_dots_v);
         iv_menu_account.setColorFilter(context.getResources().getColor(R.color.menu_disable));
 
         String tabName = FunctionHelper.GetNameTabClick(context);
@@ -137,25 +137,25 @@ public class HomeScreenActivity extends TabActivity implements View.OnClickListe
             case CommonDefine.HOME:
                 tv_menu_home.setTextColor(context.getResources().getColor(
                         R.color.menu_enable));
-                iv_menu_home.setImageResource(R.drawable.ic_home_white_24dp);
+                iv_menu_home.setImageResource(R.drawable.ic_home2);
                 iv_menu_home.setColorFilter(context.getResources().getColor(R.color.menu_enable));
                 break;
             case CommonDefine.PLACEHOLD:
                 tv_menu_datcho.setTextColor(context.getResources().getColor(
                         R.color.menu_enable));
-                iv_menu_datcho.setImageResource(R.drawable.ic_map);
+                iv_menu_datcho.setImageResource(R.drawable.ic_map2);
                 iv_menu_datcho.setColorFilter(context.getResources().getColor(R.color.menu_enable));
                 break;
             case CommonDefine.INFO:
                 tv_menu_info.setTextColor(context.getResources().getColor(
                         R.color.menu_enable));
-                iv_menu_info.setImageResource(R.drawable.ic_error_white_24dp);
+                iv_menu_info.setImageResource(R.drawable.ic_info);
                 iv_menu_info.setColorFilter(context.getResources().getColor(R.color.menu_enable));
                 break;
             case CommonDefine.ACCOUNT:
                 tv_menu_account.setTextColor(context.getResources().getColor(
                         R.color.menu_enable));
-                iv_menu_account.setImageResource(R.drawable.ic_more_horiz_white_24dp);
+                iv_menu_account.setImageResource(R.drawable.ic_dots_v);
                 iv_menu_account.setColorFilter(context.getResources().getColor(R.color.menu_enable));
                 break;
         }

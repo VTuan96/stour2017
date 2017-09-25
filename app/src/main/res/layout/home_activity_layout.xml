@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/menu_enable"
+        android:fitsSystemWindows="true"
         app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
@@ -76,7 +77,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="-20dp"
-                            android:src="@drawable/ic_map_white_24dp"
+                            android:src="@drawable/ic_map5"
                             android:tint="@color/menu_enable" />
 
                         <TextView
@@ -104,7 +105,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="-20dp"
-                            android:src="@drawable/ic_person_pin_white_24dp"
+                            android:src="@drawable/ic_app2"
                             android:tint="@color/placecolor" />
 
                         <TextView
@@ -145,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="-20dp"
-                            android:src="@drawable/ic_local_activity_white_24dp"
+                            android:src="@drawable/ic_local"
                             android:tint="@color/placecolor" />
 
                         <TextView
@@ -173,7 +174,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="-20dp"
-                            android:src="@drawable/ic_local_florist_black_24dp"
+                            android:src="@drawable/ic_fes"
                             android:tint="@color/menu_enable" />
 
                         <TextView
@@ -202,7 +203,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="-20dp"
-                            android:src="@drawable/ic_restaurant_white_24dp"
+                            android:src="@drawable/ic_food"
                             android:tint="@color/placecolor1" />
 
                         <TextView

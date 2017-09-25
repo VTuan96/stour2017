@@ -1,52 +1,103 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rlPosition"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:background="@color/background_map">
+        android:layout_height="100dp"
+        android:background="@color/background_map"
+        android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/edFrom"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="35dp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/white"
-            android:hint="@string/from"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="13sp" />
-
-        <EditText
-            android:id="@+id/edTo"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@+id/edFrom"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="35dp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/white"
-            android:hint="@string/to"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="13sp" />
-
-        <Button
-            android:id="@+id/btnSearch"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/edTo"
-            android:text="Search" />
+            android:layout_weight="1">
 
-    </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/lnFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/ic_mylocation" />
+
+                <EditText
+                    android:id="@+id/edFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="@color/white"
+                    android:hint="@string/from"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lnTo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lnFrom"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/ic_place" />
+
+                <EditText
+                    android:id="@+id/edTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="@color/white"
+                    android:hint="@string/to"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+            <at.markushi.ui.CircleButton
+                android:id="@+id/btnSearch"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_direction1"
+                app:cb_color="@color/white"
+                app:cb_pressedRingWidth="8dip" />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
     <fragment
         android:id="@+id/map"

@@ -64,21 +64,13 @@ public interface CommonDefine {
                     "&srs=EPSG:900913&&format=image/png&transparent=true";
 
 
-//    public static final String WMS_FORMAT_ROUTE_STRING =
-//            "http://sanslab.vn:5588/geoserver/KVBK/wms?" +
-//                    "LAYERS=KVBK:route&FORMAT=image/png" +
-//                    "&TRANSPARENT=TRUE" +
-//                    "&VIEWPARAMS=x1:105.84099914755468;y1:21.002300453771912;x2:105.85132028784173;y2:21.003342122141163" +
-//                    "&SERVICE=WMS&VERSION=1.1.1" +
-//                    "&REQUEST=GetMap&STYLES=&SRS=EPSG:3857" +
-//                    "&BBOX=%f,%f,%f,%f" +
-//                    "&WIDTH=256&HEIGHT=256";
-
     public static final String WMS_FORMAT_ROUTE_STRING =
             "http://sanslab.vn:5588/geoserver/KVBK/wms?" +
                     "LAYERS=KVBK:route&FORMAT=image/png" +
                     "&TRANSPARENT=TRUE" +
                     "&VIEWPARAMS";
+
+    public static final String GOOGLEMAP_DIRECTION = "https://maps.googleapis.com/maps/api/directions/";
 
 
 }
