@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/rlPosition"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -97,7 +97,9 @@
         </LinearLayout>
 
 
-    </LinearLayout>
+    </LinearLayout>-->
+
+
 
     <fragment
         android:id="@+id/map"
@@ -106,7 +108,11 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/rlPosition"
         map:uiZoomControls="true"
-        tools:context="com.bkstek.stour.MapsActivity" />
+        tools:context="com.bkstek.stour.MapsActivity"
+
+
+        />
+
 
 </RelativeLayout>
 

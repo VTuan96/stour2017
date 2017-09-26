@@ -42,6 +42,6 @@ dependencies {
     compile 'hk.ids.gws.android.sclick:library:1.0'
     compile 'com.github.markushi:circlebutton:1.1'
     compile 'it.sephiroth.android.library.bottomnavigation:bottom-navigation:2.0.1-rc1'
-    compile 'com.google.android.gms:play-services-maps:11.0.4'
+    compile 'com.google.android.gms:play-services-maps:11.4.0'
     testCompile 'junit:junit:4.12'
 }
