@@ -1,17 +1,12 @@
 package com.bkstek.stour;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -52,7 +47,7 @@ import static com.bkstek.stour.util.CommonDefine.GEOSERVER_FORMAT;
 import static com.bkstek.stour.util.CommonDefine.GOOGLEMAP_DIRECTION;
 import static com.bkstek.stour.util.CommonDefine.WMS_FORMAT_ROUTE_STRING;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     EditText edFrom, edTo;
@@ -182,21 +177,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
-    public static int MY_LOCATION_REQUEST_CODE = 10000;
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == MY_LOCATION_REQUEST_CODE) {
-            if (permissions.length == 1 &&
-                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-                // Permission was denied. Display an error message.
-            }
-        }
-    }
 
     //region dinh tuyen bang google map
     //@author journaldev
@@ -355,41 +335,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        } else {
-            // Show rationale and request permission.
-        }
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(21.004508, 105.844160);
 //        mMap.setMinZoomPreference(18);
 //        mMap.setMaxZoomPreference(21);
-     //   mMap.addMarker(new MarkerOptions().position(sydney).title("Thư viện Tạ Quang Bửu")).showInfoWindow();
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Thư viện Tạ Quang Bửu")).showInfoWindow();
         //  mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.004508, 105.844160), 16.0f));
-
-        mMap.setOnMyLocationButtonClickListener(this);
-       // mMap.setOnMyLocationClickListener(this);
 
         if (mMap != null) {
             setUpMap();
         }
     }
-
-//    @Override
-//    public void onMyLocationClick(@NonNull Location location) {
-//        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
-//    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
-
 
     public void hideSoftKeyboard() {
         if (getCurrentFocus() != null) {

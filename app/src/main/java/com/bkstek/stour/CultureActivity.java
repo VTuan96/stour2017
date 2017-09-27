@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.bkstek.stour.R;
 
 import static com.bkstek.stour.util.CommonDefine.GET_CULTURE_PLACE;
 
