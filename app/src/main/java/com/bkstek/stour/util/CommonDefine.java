@@ -13,6 +13,12 @@ public interface CommonDefine {
     public static final String INFO = "Info";
     public static final String ACCOUNT = "Account";
 
+
+    /// mode of google map
+    public static final int MODE_DRIVING = 0;
+    public static final int MODE_BICYCLING = 1;
+    public static final int MODE_WALKING = 2;
+
     ///url get data
 
     public static final String DOMAIN_STOUR = "http://stour.sanslab.vn/";

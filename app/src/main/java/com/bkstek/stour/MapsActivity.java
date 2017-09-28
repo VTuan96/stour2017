@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -20,7 +21,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.bkstek.stour.mapdigital.TileProviderFactory;
@@ -61,6 +65,9 @@ import at.markushi.ui.CircleButton;
 
 import static com.bkstek.stour.util.CommonDefine.GEOSERVER_FORMAT;
 import static com.bkstek.stour.util.CommonDefine.GOOGLEMAP_DIRECTION;
+import static com.bkstek.stour.util.CommonDefine.MODE_BICYCLING;
+import static com.bkstek.stour.util.CommonDefine.MODE_DRIVING;
+import static com.bkstek.stour.util.CommonDefine.MODE_WALKING;
 import static com.bkstek.stour.util.CommonDefine.WMS_FORMAT_ROUTE_STRING;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -85,6 +92,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker mCurrLocationMarker;
     Location mLastLocation;
 
+    RadioGroup rg_modes;
+    RadioButton rb_driving, rb_bicycling, rb_walking;
+    ArrayList<LatLng> markerPoints;
+    int mMode = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,12 +105,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         edFrom = (EditText) findViewById(R.id.edFrom);
         edTo = (EditText) findViewById(R.id.edTo);
         btnSearch = (CircleButton) findViewById(R.id.btnSearch);
+        rg_modes = (RadioGroup) findViewById(R.id.rg_modes);
+        rb_driving = (RadioButton) findViewById(R.id.rb_driving);
+        rb_bicycling = (RadioButton) findViewById(R.id.rb_bicycling);
+        rb_walking = (RadioButton) findViewById(R.id.rb_walking);
+
         context = MapsActivity.this;
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
 
+        // Initializing list point
+        markerPoints = new ArrayList<LatLng>();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -124,6 +144,84 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
+        //choose mode of google map
+        rg_modes.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                // Checks, whether start and end locations are captured
+                if (markerPoints.size() >= 2) {
+                    LatLng origin = markerPoints.get(0);
+                    LatLng dest = markerPoints.get(1);
+
+                    // Getting URL to the Google Directions API
+                    String url = getDirectionUrl(origin, dest);
+
+                    DownloadTask downloadTask = new DownloadTask();
+
+                    // Start downloading json data from Google Directions API
+                    downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+                }
+            }
+        });
+
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(LatLng latLng) {
+//                // Already two locations
+//                if (markerPoints.size() > 1) {
+//                    markerPoints.clear();
+//                    ClearMap();
+//                }
+//
+//                // Adding new item to the ArrayList
+//                markerPoints.add(latLng);
+//
+//                // Draws Start and Stop markers on the Google Map
+//                drawStartStopMarkers();
+//
+//                // Checks, whether start and end locations are captured
+//                if (markerPoints.size() >= 2) {
+//                    LatLng origin = markerPoints.get(0);
+//                    LatLng dest = markerPoints.get(1);
+//
+//                    // Getting URL to the Google Directions API
+//                    String url = getDirectionUrl(origin, dest);
+//
+//                    DownloadTask downloadTask = new DownloadTask();
+//
+//                    // Start downloading json data from Google Directions API
+//                    downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+//                }
+//            }
+//        });
+
+
+    }
+
+    // Drawing Start and Stop locations
+    private void drawStartStopMarkers() {
+
+        for (int i = 0; i < markerPoints.size(); i++) {
+
+            // Creating MarkerOptions
+            MarkerOptions options = new MarkerOptions();
+
+            // Setting the position of the marker
+            options.position(markerPoints.get(i));
+
+            /**
+             * For the start location, the color of marker is GREEN and
+             * for the end location, the color of marker is RED.
+             */
+            if (i == 0) {
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            } else if (i == 1) {
+                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            }
+
+            // Add new marker to the Google Map Android API V2
+            mMap.addMarker(options);
+        }
     }
 
     private void ClearMap() {
@@ -343,11 +441,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng from = new LatLng(locationFrom.getLatitude(), locationFrom.getLongitude());
 
             mMap.addMarker(new MarkerOptions().position(from).icon(bitmapDescriptorFrom).title(strAddressFrom)).showInfoWindow();
-
+            markerPoints.add(from);
 
             LatLng to = new LatLng(locationTo.getLatitude(), locationTo.getLongitude());
             mMap.addMarker(new MarkerOptions().position(to).icon(bitmapDescriptorTo).title(strAddressTo)).showInfoWindow();
-
+            markerPoints.add(to);
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             builder.include(from);
             builder.include(to);
@@ -367,7 +465,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
     //endregion
-    
+
     //region dinh tuyen bang google map
     //@author journaldev
 
@@ -381,6 +479,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Sensor enabled
         String sensor = "sensor=false";
         String mode = "mode=driving";
+
+        if (rb_driving.isChecked()) {
+            mode = "mode=driving";
+            mMode = 0;
+        } else if (rb_bicycling.isChecked()) {
+            mode = "mode=bicycling";
+            mMode = 1;
+        } else if (rb_walking.isChecked()) {
+            mode = "mode=walking";
+            mMode = 2;
+        }
+
         // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
         // Output format
@@ -475,12 +585,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList points = null;
+
+            ArrayList<LatLng> points = null;
             PolylineOptions lineOptions = null;
             MarkerOptions markerOptions = new MarkerOptions();
 
             for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList();
+                points = new ArrayList<LatLng>();
                 lineOptions = new PolylineOptions();
 
                 List<HashMap<String, String>> path = result.get(i);
@@ -497,7 +608,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 lineOptions.addAll(points);
                 lineOptions.width(12);
-                lineOptions.color(Color.RED);
+                // Changing the color polyline according to the mode
+                if (mMode == MODE_DRIVING)
+                    lineOptions.color(Color.RED);
+                else if (mMode == MODE_BICYCLING)
+                    lineOptions.color(Color.GRAY);
+                else if (mMode == MODE_WALKING)
+                    lineOptions.color(Color.YELLOW);
                 lineOptions.geodesic(true);
 
             }
