@@ -14,10 +14,16 @@ public interface CommonDefine {
     public static final String ACCOUNT = "Account";
 
 
+    ///
+    public static final String CURRENT_LOCATION = "current";
+    public static final String TWO_POINT_RANDOM = "random_point";
+    public static final String MULTI_DIRECTION = "multi_direction";
+
+
     /// mode of google map
-    public static final int MODE_DRIVING = 0;
-    public static final int MODE_BICYCLING = 1;
-    public static final int MODE_WALKING = 2;
+    public static final String MODE_DRIVING = "driving";
+    public static final String MODE_BICYCLING = "bicycle";
+    public static final String MODE_WALKING = "walking";
 
     ///url get data
 
@@ -58,6 +64,9 @@ public interface CommonDefine {
 
     //get hotel detail
     public static final String GET_RESTAURANT_DETAIL = DOMAIN_STOUR + "api/restaurant/GetRestaurantDetail";
+
+    //get pois for map
+    public static final String GET_POIS = DOMAIN_STOUR + "api/poi/GetPOIs";
 
 
     public static final String GEOSERVER_FORMAT =

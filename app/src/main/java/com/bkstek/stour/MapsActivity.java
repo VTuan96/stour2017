@@ -18,16 +18,23 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bkstek.stour.dialog.DialogPOIOrigin;
 import com.bkstek.stour.mapdigital.TileProviderFactory;
+import com.bkstek.stour.util.CommonDefine;
 import com.bkstek.stour.util.DirectionsJSONParser;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -73,12 +80,20 @@ import static com.bkstek.stour.util.CommonDefine.WMS_FORMAT_ROUTE_STRING;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, GoogleMap.OnMapLongClickListener, View.OnClickListener {
 
     private GoogleMap mMap;
     EditText edFrom, edTo;
+
+    RelativeLayout rlCar, rlBicycle, rlWalk;
+    ImageView imCar, imBicycle, imWalk;
+
+    RelativeLayout rlSingle, rlMulti, lnMultiRouting, rlButtonMultiRoute;
+    TextView txtSingle, txtMulti;
+
+    LinearLayout rlPosition;
+
     Context context;
-    //Button btnSearch;
     CircleButton btnSearch;
     BitmapDescriptor bitmapDescriptorTo;
     BitmapDescriptor bitmapDescriptorFrom;
@@ -91,12 +106,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationRequest mLocationRequest;
     Marker mCurrLocationMarker;
     Location mLastLocation;
+    LatLng currentLocation;
+    LatLng longClickLocation; //location of point long click map
+    Marker marker; //marker use for long click map
 
-    RadioGroup rg_modes;
-    RadioButton rb_driving, rb_bicycling, rb_walking;
-    ArrayList<LatLng> markerPoints;
-    int mMode = 0;
+    private String TAG = ""; // set tag for driection mode
 
+    private String Mode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +121,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         edFrom = (EditText) findViewById(R.id.edFrom);
         edTo = (EditText) findViewById(R.id.edTo);
         btnSearch = (CircleButton) findViewById(R.id.btnSearch);
-        rg_modes = (RadioGroup) findViewById(R.id.rg_modes);
-        rb_driving = (RadioButton) findViewById(R.id.rb_driving);
-        rb_bicycling = (RadioButton) findViewById(R.id.rb_bicycling);
-        rb_walking = (RadioButton) findViewById(R.id.rb_walking);
+        rlCar = (RelativeLayout) findViewById(R.id.rlCar);
+        rlBicycle = (RelativeLayout) findViewById(R.id.rlBicycle);
+        rlWalk = (RelativeLayout) findViewById(R.id.rlWalk);
+        imCar = (ImageView) findViewById(R.id.imCar);
+        imBicycle = (ImageView) findViewById(R.id.imBicycle);
+        imWalk = (ImageView) findViewById(R.id.imWalk);
+
+        rlSingle = (RelativeLayout) findViewById(R.id.rlSingle);
+        rlMulti = (RelativeLayout) findViewById(R.id.rlMulti);
+        txtSingle = (TextView) findViewById(R.id.txtSingle);
+        txtMulti = (TextView) findViewById(R.id.txtMulti);
+        lnMultiRouting = (RelativeLayout) findViewById(R.id.lnMultiRouting);
+        rlButtonMultiRoute = (RelativeLayout) findViewById(R.id.rlButtonMultiRoute);
+        rlPosition = (LinearLayout) findViewById(R.id.rlPosition);
 
         context = MapsActivity.this;
 
@@ -116,14 +142,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             checkLocationPermission();
         }
 
-        // Initializing list point
-        markerPoints = new ArrayList<LatLng>();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        //addMapEvents();
 
         bitmapDescriptorFrom
                 = BitmapDescriptorFactory.defaultMarker(
@@ -136,99 +159,185 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hideSoftKeyboard();
-                ClearMap();
-                setUpMap();
-                getAddress();
-            }
-        });
-
-
-        //choose mode of google map
-        rg_modes.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                // Checks, whether start and end locations are captured
-                if (markerPoints.size() >= 2) {
-                    LatLng origin = markerPoints.get(0);
-                    LatLng dest = markerPoints.get(1);
-
-                    // Getting URL to the Google Directions API
-                    String url = getDirectionUrl(origin, dest);
-
-                    DownloadTask downloadTask = new DownloadTask();
-
-                    // Start downloading json data from Google Directions API
-                    downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+                if (edFrom.getText().equals("Vị trí của bạn")) {
+                    TAG = CommonDefine.CURRENT_LOCATION;
+                } else {
+                    TAG = CommonDefine.TWO_POINT_RANDOM;
                 }
+                DriectionMap(TAG, Mode);
             }
         });
 
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(LatLng latLng) {
-//                // Already two locations
-//                if (markerPoints.size() > 1) {
-//                    markerPoints.clear();
-//                    ClearMap();
-//                }
-//
-//                // Adding new item to the ArrayList
-//                markerPoints.add(latLng);
-//
-//                // Draws Start and Stop markers on the Google Map
-//                drawStartStopMarkers();
-//
-//                // Checks, whether start and end locations are captured
-//                if (markerPoints.size() >= 2) {
-//                    LatLng origin = markerPoints.get(0);
-//                    LatLng dest = markerPoints.get(1);
-//
-//                    // Getting URL to the Google Directions API
-//                    String url = getDirectionUrl(origin, dest);
-//
-//                    DownloadTask downloadTask = new DownloadTask();
-//
-//                    // Start downloading json data from Google Directions API
-//                    downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
-//                }
-//            }
-//        });
-
+        rlCar.setOnClickListener(this);
+        rlBicycle.setOnClickListener(this);
+        rlWalk.setOnClickListener(this);
+        rlSingle.setOnClickListener(this);
+        rlMulti.setOnClickListener(this);
 
     }
 
-    // Drawing Start and Stop locations
-    private void drawStartStopMarkers() {
+    //region onclick view
 
-        for (int i = 0; i < markerPoints.size(); i++) {
+    @Override
+    public void onClick(View view) {
+        if (edFrom.getText().equals("Vị trí của bạn")) {
+            TAG = CommonDefine.CURRENT_LOCATION;
+        } else {
+            TAG = CommonDefine.TWO_POINT_RANDOM;
+        }
 
-            // Creating MarkerOptions
-            MarkerOptions options = new MarkerOptions();
-
-            // Setting the position of the marker
-            options.position(markerPoints.get(i));
-
-            /**
-             * For the start location, the color of marker is GREEN and
-             * for the end location, the color of marker is RED.
-             */
-            if (i == 0) {
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            } else if (i == 1) {
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            }
-
-            // Add new marker to the Google Map Android API V2
-            mMap.addMarker(options);
+        int id = view.getId();
+        switch (id) {
+            case R.id.rlCar:
+                ClickModeCar();
+                Mode = CommonDefine.MODE_DRIVING;
+                DriectionMap(TAG, Mode);
+                break;
+            case R.id.rlBicycle:
+                ClickModeBicycle();
+                Mode = CommonDefine.MODE_BICYCLING;
+                DriectionMap(TAG, Mode);
+                break;
+            case R.id.rlWalk:
+                ClickModeWalk();
+                Mode = CommonDefine.MODE_WALKING;
+                DriectionMap(TAG, Mode);
+                break;
+            case R.id.rlSingle:
+                ClickSingleLayout();
+                break;
+            case R.id.rlMulti:
+                ClickMultiLayout();
+                new DialogPOIOrigin(context).show();
+                break;
         }
     }
+
+    private void ClickSingleLayout() {
+        rlSingle.setBackgroundResource(R.drawable.custom_oval_layout);
+        txtSingle.setTextColor(Color.parseColor("#4487f2"));
+
+        rlMulti.setBackgroundColor(Color.parseColor("#4487f2"));
+        txtMulti.setTextColor(Color.parseColor("#ffffff"));
+        lnMultiRouting.setVisibility(View.GONE);
+        rlPosition.setVisibility(View.VISIBLE);
+    }
+
+    private void ClickMultiLayout() {
+        rlMulti.setBackgroundResource(R.drawable.custom_oval_layout);
+        txtMulti.setTextColor(Color.parseColor("#4487f2"));
+
+        rlSingle.setBackgroundColor(Color.parseColor("#4487f2"));
+        txtSingle.setTextColor(Color.parseColor("#ffffff"));
+
+        lnMultiRouting.setVisibility(View.VISIBLE);
+        rlPosition.setVisibility(View.GONE);
+    }
+
+
+    private void ClickModeBicycle() {
+
+        rlBicycle.setBackgroundResource(R.drawable.custom_oval_layout);
+        imBicycle.setImageResource(R.drawable.bicycle_2);
+
+        rlCar.setBackgroundColor(Color.parseColor("#4487f2"));
+        imCar.setImageResource(R.drawable.car_big4);
+
+        rlWalk.setBackgroundColor(Color.parseColor("#4487f2"));
+        imWalk.setImageResource(R.drawable.walking_2);
+
+    }
+
+    private void ClickModeWalk() {
+
+        rlWalk.setBackgroundResource(R.drawable.custom_oval_layout);
+        imBicycle.setImageResource(R.drawable.walking_1);
+
+        rlCar.setBackgroundColor(Color.parseColor("#4487f2"));
+        imCar.setImageResource(R.drawable.car_big4);
+
+        rlBicycle.setBackgroundColor(Color.parseColor("#4487f2"));
+        imBicycle.setImageResource(R.drawable.bycycle_1);
+
+    }
+
+    private void ClickModeCar() {
+
+        rlWalk.setBackgroundColor(Color.parseColor("#4487f2"));
+        imWalk.setImageResource(R.drawable.walking_2);
+
+        rlCar.setBackgroundResource(R.drawable.custom_oval_layout);
+        imCar.setImageResource(R.drawable.car_7);
+
+        rlBicycle.setBackgroundColor(Color.parseColor("#4487f2"));
+        imBicycle.setImageResource(R.drawable.bycycle_1);
+
+    }
+
+    //endregion
+
+    //region command constructor
+    private void SetDefault() {
+        Mode = CommonDefine.MODE_DRIVING;
+        TAG = CommonDefine.CURRENT_LOCATION;
+
+        edFrom.setText("Vị trí của bạn");
+        edTo.setSelection(0);
+    }
+    //endregion
+
+    //region dinh tuyen chung
+    private void DriectionMap(String tag, String mode) {
+
+        if (edFrom.getText().equals("")) {
+            Toast.makeText(context, "Vui lòng chọn điểm đến", Toast.LENGTH_LONG).show();
+        } else {
+            switch (tag) {
+                case CommonDefine.CURRENT_LOCATION:
+                    DirectionGoogleMap(currentLocation, longClickLocation, mode);
+                    break;
+                case CommonDefine.TWO_POINT_RANDOM:
+                    DirectionFor2Point();
+                    break;
+
+            }
+        }
+    }
+
+    private void DirectionFor2Point() {
+        hideSoftKeyboard();
+        ClearMap();
+        setUpMap();
+        getAddress(Mode);
+    }
+    //endregion
+
+    //region clear all map
 
     private void ClearMap() {
         if (mMap != null)
             mMap.clear();
     }
+    //endregion
 
+    //region long click map
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        if (mMap != null) {
+            if (marker != null) {
+                marker.remove();
+            }
+            ClearMap();
+            marker = mMap.addMarker(new MarkerOptions().position(latLng));
+            longClickLocation = latLng;
+            edTo.setText(String.valueOf(latLng.latitude).substring(0, 12) + "," + String.valueOf(latLng.longitude).substring(0, 12));
+            TAG = CommonDefine.CURRENT_LOCATION;
+            Mode = CommonDefine.MODE_DRIVING;
+            ClickModeCar();
+        }
+    }
+
+    //endregion
 
     //region get current location
     protected synchronized void buildGoogleApiClient() {
@@ -243,8 +352,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-//        mLocationRequest.setInterval(1000);
-//        mLocationRequest.setFastestInterval(1000);
+
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -266,7 +374,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
 
-        mLastLocation = location;
+
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
@@ -322,9 +430,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //this code stops location updates
         if (mGoogleApiClient != null) {
+            mLastLocation = location;
+            currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
     }
+
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
@@ -388,7 +499,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //endregion
 
-    private void getAddress() {
+    //region get address for 2 point random
+
+    private void getAddress(String googleMode) {
         String addressFrom = edFrom.getText().toString();
         String addressTo = edTo.getText().toString();
         if (addressFrom.equals("")) {
@@ -396,16 +509,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else if (addressTo.equals("")) {
             Toast.makeText(context, "Bạn chưa nhập địa chỉ điểm đến", Toast.LENGTH_LONG).show();
         } else {
-            getLocationFromAddress(addressFrom, addressTo);
+            getLocationFromAddress(addressFrom, addressTo, googleMode);
             RoutingInMap(locationFrom, locationTo);
         }
     }
+    //endregion
+
+    //region set up digital map
 
     private void setUpMap() {
         TileProvider tileProvider = TileProviderFactory.getTileProvider(GEOSERVER_FORMAT);
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
     }
 
+    //endregion
 
     // region dinh tuyen tren ban do so hoa thong qua kinh do vi do diem dau va diem cuoi
     private void RoutingInMap(Address locationF, Address locationT) {
@@ -422,9 +539,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    public void getLocationFromAddress(String strAddressFrom, String strAddressTo) {
+    public void getLocationFromAddress(String strAddressFrom, String strAddressTo, String googleMode) {
 
-        Geocoder coder = new Geocoder(this, Locale.US);
+        Geocoder coder = new Geocoder(this, Locale.getDefault());
         List<Address> addressFrom;
         List<Address> addressTo;
         try {
@@ -441,24 +558,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng from = new LatLng(locationFrom.getLatitude(), locationFrom.getLongitude());
 
             mMap.addMarker(new MarkerOptions().position(from).icon(bitmapDescriptorFrom).title(strAddressFrom)).showInfoWindow();
-            markerPoints.add(from);
 
             LatLng to = new LatLng(locationTo.getLatitude(), locationTo.getLongitude());
             mMap.addMarker(new MarkerOptions().position(to).icon(bitmapDescriptorTo).title(strAddressTo)).showInfoWindow();
-            markerPoints.add(to);
+
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             builder.include(from);
             builder.include(to);
             LatLngBounds bound = builder.build();
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 25), 1000, null);
 
-            // Getting URL to the Google Directions API
-            String url = getDirectionUrl(from, to);
-
-            DownloadTask downloadTask = new DownloadTask();
-
-            // Start downloading json data from Google Directions API
-            downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+            DirectionGoogleMapFor2Point(from, to, googleMode);
 
         } catch (IOException e) {
             // Toast.makeText(context, "Địa chỉ bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
@@ -466,10 +576,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     //endregion
 
-    //region dinh tuyen bang google map
-    //@author journaldev
+    private void DirectionGoogleMap(LatLng from, LatLng to, String mode) {
+        // Getting URL to the Google Directions API
+        ClearMap();
+//        setUpMap();
+        mMap.addMarker(new MarkerOptions().position(longClickLocation));
+        String url = getDirectionUrl(from, to, mode);
 
-    private String getDirectionUrl(LatLng origin, LatLng dest) {
+        DownloadTask downloadTask = new DownloadTask();
+
+        // Start downloading json data from Google Directions API
+        downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+
+    }
+
+    private void DirectionGoogleMapFor2Point(LatLng from, LatLng to, String mode) {
+        // Getting URL to the Google Directions API
+        // ClearMap();
+        // mMap.addMarker(new MarkerOptions().position(longClickLocation));
+        String url = getDirectionUrl(from, to, mode);
+
+        DownloadTask downloadTask = new DownloadTask();
+
+        // Start downloading json data from Google Directions API
+        downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
+
+    }
+
+
+    //region dinh tuyen bang google map
+
+    private String getDirectionUrl(LatLng origin, LatLng dest, String modeGoogleMap) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
 
@@ -478,18 +615,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Sensor enabled
         String sensor = "sensor=false";
-        String mode = "mode=driving";
+        String mode = "mode=" + modeGoogleMap;
 
-        if (rb_driving.isChecked()) {
-            mode = "mode=driving";
-            mMode = 0;
-        } else if (rb_bicycling.isChecked()) {
-            mode = "mode=bicycling";
-            mMode = 1;
-        } else if (rb_walking.isChecked()) {
-            mode = "mode=walking";
-            mMode = 2;
-        }
 
         // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
@@ -588,7 +715,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             ArrayList<LatLng> points = null;
             PolylineOptions lineOptions = null;
-            MarkerOptions markerOptions = new MarkerOptions();
 
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList<LatLng>();
@@ -609,12 +735,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 lineOptions.addAll(points);
                 lineOptions.width(12);
                 // Changing the color polyline according to the mode
-                if (mMode == MODE_DRIVING)
-                    lineOptions.color(Color.RED);
-                else if (mMode == MODE_BICYCLING)
-                    lineOptions.color(Color.GRAY);
-                else if (mMode == MODE_WALKING)
-                    lineOptions.color(Color.YELLOW);
+
+                lineOptions.color(Color.RED);
+
                 lineOptions.geodesic(true);
 
             }
@@ -657,6 +780,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (mMap != null) {
             setUpMap();
+            SetDefault();
+            mMap.setOnMapLongClickListener(this);
         }
     }
 

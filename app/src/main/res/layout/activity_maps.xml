@@ -6,9 +6,90 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/lnChooseMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/splashbackgroudcolor"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/rlSingle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_oval_layout">
+
+            <TextView
+                android:id="@+id/txtSingle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/single_routing"
+                android:textColor="@color/splashbackgroudcolor" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlMulti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/txtMulti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/multi_routing"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/lnMultiRouting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lnChooseMode"
+        android:background="@color/splashbackgroudcolor"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/rlButtonMultiRoute"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_oval_layout"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/multi_routing"
+                android:textColor="@color/splashbackgroudcolor" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <LinearLayout
         android:id="@+id/rlPosition"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_below="@+id/lnMultiRouting"
         android:background="@color/background_map"
         android:orientation="horizontal">
 
@@ -102,42 +183,66 @@
     <LinearLayout
         android:id="@+id/lnDriving"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_below="@+id/rlPosition"
-        android:background="@color/white"
+        android:background="@color/splashbackgroudcolor"
         android:orientation="horizontal">
 
-        <RadioGroup
-            android:id="@+id/rg_modes"
+        <RelativeLayout
+            android:id="@+id/rlCar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="10dp"
-            android:orientation="horizontal">
+            android:layout_height="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_oval_layout">
 
-            <RadioButton
-                android:id="@+id/rb_driving"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imCar"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/str_rb_driving" />
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:foregroundGravity="center"
+                android:src="@drawable/car_7" />
 
-            <RadioButton
-                android:id="@+id/rb_bicycling"
-                android:layout_width="match_parent"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlBicycle"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imBicycle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/str_rb_bicycling" />
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:foregroundGravity="center"
+                android:src="@drawable/bycycle_1" />
+        </RelativeLayout>
 
-            <RadioButton
-                android:id="@+id/rb_walking"
-                android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/rlWalk"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imWalk"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/str_rb_walking" />
-
-        </RadioGroup>
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:foregroundGravity="center"
+                android:src="@drawable/walking_2" />
+        </RelativeLayout>
 
     </LinearLayout>
 
