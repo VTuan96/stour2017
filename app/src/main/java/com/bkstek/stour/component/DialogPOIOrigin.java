@@ -1,4 +1,4 @@
-package com.bkstek.stour.dialog;
+package com.bkstek.stour.component;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -16,6 +16,7 @@ import com.bkstek.stour.R;
 import com.bkstek.stour.adapter.AdapterOrigin;
 import com.bkstek.stour.model.POI;
 import com.bkstek.stour.util.VolleySingleton;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,14 +36,16 @@ public class DialogPOIOrigin extends Dialog {
     List<POI> poiList = new ArrayList<>();
     Context context;
     AdapterOrigin adapterOrigin;
+    List<LatLng> latLngList;
 
-    public DialogPOIOrigin(@NonNull Context context) {
+    public DialogPOIOrigin(@NonNull Context context, List<LatLng> latLngList) {
         super(context);
 
         setContentView(R.layout.dialog_poi_origin);
         setCanceledOnTouchOutside(false);
 
         this.context = context;
+        this.latLngList=latLngList;
 
         recyclerPois = (RecyclerView) findViewById(R.id.recyclerPois);
 
@@ -65,10 +68,12 @@ public class DialogPOIOrigin extends Dialog {
                                 poi.setName(object.getString("Name"));
                                 poi.setLatitude(object.getString("Latitude"));
                                 poi.setLongitude(object.getString("Longitude"));
+                                poi.setImage(object.getString("Image"));
+                                poi.setAddress(object.getString("Address"));
                                 poiList.add(poi);
                             }
 
-                            adapterOrigin = new AdapterOrigin(context, poiList);
+                            adapterOrigin = new AdapterOrigin(context, poiList, DialogPOIOrigin.this,latLngList);
                             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 1);
                             recyclerPois.setLayoutManager(layoutManager);
                             recyclerPois.setAdapter(adapterOrigin);

@@ -28,4 +28,13 @@
         <!-- <item name="android:colorButtonNormal">@color/primary_dark</item>-->
     </style>
 
+    <style name="Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">@color/splashbackgroudcolor</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
 </resources>

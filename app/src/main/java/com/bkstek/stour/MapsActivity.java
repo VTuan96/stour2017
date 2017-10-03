@@ -12,27 +12,22 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.TextViewCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bkstek.stour.dialog.DialogPOIOrigin;
+import com.bkstek.stour.component.DialogPOIOrigin;
 import com.bkstek.stour.mapdigital.TileProviderFactory;
 import com.bkstek.stour.util.CommonDefine;
 import com.bkstek.stour.util.DirectionsJSONParser;
@@ -72,9 +67,6 @@ import at.markushi.ui.CircleButton;
 
 import static com.bkstek.stour.util.CommonDefine.GEOSERVER_FORMAT;
 import static com.bkstek.stour.util.CommonDefine.GOOGLEMAP_DIRECTION;
-import static com.bkstek.stour.util.CommonDefine.MODE_BICYCLING;
-import static com.bkstek.stour.util.CommonDefine.MODE_DRIVING;
-import static com.bkstek.stour.util.CommonDefine.MODE_WALKING;
 import static com.bkstek.stour.util.CommonDefine.WMS_FORMAT_ROUTE_STRING;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -82,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, GoogleMap.OnMapLongClickListener, View.OnClickListener {
 
-    private GoogleMap mMap;
+    public static GoogleMap mMap;
     EditText edFrom, edTo;
 
     RelativeLayout rlCar, rlBicycle, rlWalk;
@@ -93,10 +85,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     LinearLayout rlPosition;
 
+    LinearLayout lnDriving, lnDrivingMulti;
+    RelativeLayout rlCarMulti, rlBicycleMulti, rlWalkMulti;
+    ImageView imCarMulti, imBicycleMulti, imWalkMulti;
+
     Context context;
     CircleButton btnSearch;
-    BitmapDescriptor bitmapDescriptorTo;
-    BitmapDescriptor bitmapDescriptorFrom;
+    public static BitmapDescriptor bitmapDescriptorTo;
+    public static BitmapDescriptor bitmapDescriptorFrom;
     Address locationFrom = null;
     Address locationTo = null;
 
@@ -113,6 +109,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String TAG = ""; // set tag for driection mode
 
     private String Mode = "";
+
+    //list latlong for multi direction
+    List<LatLng> latLngList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +134,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         lnMultiRouting = (RelativeLayout) findViewById(R.id.lnMultiRouting);
         rlButtonMultiRoute = (RelativeLayout) findViewById(R.id.rlButtonMultiRoute);
         rlPosition = (LinearLayout) findViewById(R.id.rlPosition);
+        lnDriving = (LinearLayout) findViewById(R.id.lnDriving);
+        lnDrivingMulti = (LinearLayout) findViewById(R.id.lnDrivingMulti);
+        rlCarMulti = (RelativeLayout) findViewById(R.id.rlCarMulti);
+        rlBicycleMulti = (RelativeLayout) findViewById(R.id.rlBicycleMulti);
+        rlWalkMulti = (RelativeLayout) findViewById(R.id.rlWalkMulti);
+        imCarMulti = (ImageView) findViewById(R.id.imCarMulti);
+        imBicycleMulti = (ImageView) findViewById(R.id.imBicycleMulti);
+        imWalkMulti = (ImageView) findViewById(R.id.imWalkMulti);
 
         context = MapsActivity.this;
 
@@ -159,7 +166,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (edFrom.getText().equals("Vị trí của bạn")) {
+                String txtFrom = edFrom.getText().toString();
+                if (txtFrom.equals("Vị trí của bạn")) {
                     TAG = CommonDefine.CURRENT_LOCATION;
                 } else {
                     TAG = CommonDefine.TWO_POINT_RANDOM;
@@ -173,6 +181,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rlWalk.setOnClickListener(this);
         rlSingle.setOnClickListener(this);
         rlMulti.setOnClickListener(this);
+        rlCarMulti.setOnClickListener(this);
+        rlBicycleMulti.setOnClickListener(this);
+        rlWalkMulti.setOnClickListener(this);
 
     }
 
@@ -180,7 +191,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onClick(View view) {
-        if (edFrom.getText().equals("Vị trí của bạn")) {
+        String txtFrom = edFrom.getText().toString();
+        if (txtFrom.equals("Vị trí của bạn")) {
             TAG = CommonDefine.CURRENT_LOCATION;
         } else {
             TAG = CommonDefine.TWO_POINT_RANDOM;
@@ -189,26 +201,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int id = view.getId();
         switch (id) {
             case R.id.rlCar:
-                ClickModeCar();
+                ClickModeCar("single");
                 Mode = CommonDefine.MODE_DRIVING;
                 DriectionMap(TAG, Mode);
                 break;
             case R.id.rlBicycle:
-                ClickModeBicycle();
+                ClickModeBicycle("single");
                 Mode = CommonDefine.MODE_BICYCLING;
                 DriectionMap(TAG, Mode);
                 break;
             case R.id.rlWalk:
-                ClickModeWalk();
+                ClickModeWalk("single");
                 Mode = CommonDefine.MODE_WALKING;
                 DriectionMap(TAG, Mode);
                 break;
             case R.id.rlSingle:
+                lnDrivingMulti.setVisibility(View.GONE);
+                lnDriving.setVisibility(View.VISIBLE);
                 ClickSingleLayout();
+                ClearMap();
+                setUpMap();
                 break;
             case R.id.rlMulti:
+                lnDrivingMulti.setVisibility(View.VISIBLE);
+                lnDriving.setVisibility(View.GONE);
                 ClickMultiLayout();
-                new DialogPOIOrigin(context).show();
+                ClearMap();
+                setUpMap();
+                new DialogPOIOrigin(context, latLngList).show();
+                break;
+            case R.id.rlCarMulti:
+                ClickModeCar("multi");
+                Mode = CommonDefine.MODE_DRIVING;
+                ClearMap();
+                for (int i = 1; i < latLngList.size(); i++) {
+                    MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                }
+                break;
+            case R.id.rlBicycleMulti:
+                ClickModeBicycle("multi");
+                Mode = CommonDefine.MODE_BICYCLING;
+                ClearMap();
+                for (int i = 1; i < latLngList.size(); i++) {
+                    MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                }
+                break;
+            case R.id.rlWalkMulti:
+                ClickModeWalk("multi");
+                Mode = CommonDefine.MODE_WALKING;
+                ClearMap();
+                for (int i = 1; i < latLngList.size(); i++) {
+                    MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                }
                 break;
         }
     }
@@ -235,42 +279,75 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void ClickModeBicycle() {
+    private void ClickModeBicycle(String tag) {
 
-        rlBicycle.setBackgroundResource(R.drawable.custom_oval_layout);
-        imBicycle.setImageResource(R.drawable.bicycle_2);
+        if (tag.equals("single")) {
+            rlBicycle.setBackgroundResource(R.drawable.custom_oval_layout);
+            imBicycle.setImageResource(R.drawable.bicycle_2);
 
-        rlCar.setBackgroundColor(Color.parseColor("#4487f2"));
-        imCar.setImageResource(R.drawable.car_big4);
+            rlCar.setBackgroundColor(Color.parseColor("#4487f2"));
+            imCar.setImageResource(R.drawable.car_big4);
 
-        rlWalk.setBackgroundColor(Color.parseColor("#4487f2"));
-        imWalk.setImageResource(R.drawable.walking_2);
+            rlWalk.setBackgroundColor(Color.parseColor("#4487f2"));
+            imWalk.setImageResource(R.drawable.walking_2);
+        } else if (tag.equals("multi")) {
+            rlBicycleMulti.setBackgroundResource(R.drawable.custom_oval_layout);
+            imBicycleMulti.setImageResource(R.drawable.bicycle_2);
+
+            rlCarMulti.setBackgroundColor(Color.parseColor("#4487f2"));
+            imCarMulti.setImageResource(R.drawable.car_big4);
+
+            rlWalkMulti.setBackgroundColor(Color.parseColor("#4487f2"));
+            imWalkMulti.setImageResource(R.drawable.walking_2);
+        }
+
 
     }
 
-    private void ClickModeWalk() {
+    private void ClickModeWalk(String tag) {
+        if (tag.equals("single")) {
+            rlWalk.setBackgroundResource(R.drawable.custom_oval_layout);
+            imWalk.setImageResource(R.drawable.walking_1);
 
-        rlWalk.setBackgroundResource(R.drawable.custom_oval_layout);
-        imBicycle.setImageResource(R.drawable.walking_1);
+            rlCar.setBackgroundColor(Color.parseColor("#4487f2"));
+            imCar.setImageResource(R.drawable.car_big4);
 
-        rlCar.setBackgroundColor(Color.parseColor("#4487f2"));
-        imCar.setImageResource(R.drawable.car_big4);
+            rlBicycle.setBackgroundColor(Color.parseColor("#4487f2"));
+            imBicycle.setImageResource(R.drawable.bycycle_1);
+        } else if (tag.equals("multi")) {
+            rlWalkMulti.setBackgroundResource(R.drawable.custom_oval_layout);
+            imWalkMulti.setImageResource(R.drawable.walking_1);
 
-        rlBicycle.setBackgroundColor(Color.parseColor("#4487f2"));
-        imBicycle.setImageResource(R.drawable.bycycle_1);
+            rlCarMulti.setBackgroundColor(Color.parseColor("#4487f2"));
+            imCarMulti.setImageResource(R.drawable.car_big4);
+
+            rlBicycleMulti.setBackgroundColor(Color.parseColor("#4487f2"));
+            imBicycleMulti.setImageResource(R.drawable.bycycle_1);
+        }
+
 
     }
 
-    private void ClickModeCar() {
+    private void ClickModeCar(String tag) {
+        if (tag.equals("single")) {
+            rlWalk.setBackgroundColor(Color.parseColor("#4487f2"));
+            imWalk.setImageResource(R.drawable.walking_2);
 
-        rlWalk.setBackgroundColor(Color.parseColor("#4487f2"));
-        imWalk.setImageResource(R.drawable.walking_2);
+            rlCar.setBackgroundResource(R.drawable.custom_oval_layout);
+            imCar.setImageResource(R.drawable.car_7);
 
-        rlCar.setBackgroundResource(R.drawable.custom_oval_layout);
-        imCar.setImageResource(R.drawable.car_7);
+            rlBicycle.setBackgroundColor(Color.parseColor("#4487f2"));
+            imBicycle.setImageResource(R.drawable.bycycle_1);
+        } else if (tag.equals("multi")) {
+            rlWalkMulti.setBackgroundColor(Color.parseColor("#4487f2"));
+            imWalkMulti.setImageResource(R.drawable.walking_2);
 
-        rlBicycle.setBackgroundColor(Color.parseColor("#4487f2"));
-        imBicycle.setImageResource(R.drawable.bycycle_1);
+            rlCarMulti.setBackgroundResource(R.drawable.custom_oval_layout);
+            imCarMulti.setImageResource(R.drawable.car_7);
+
+            rlBicycleMulti.setBackgroundColor(Color.parseColor("#4487f2"));
+            imBicycleMulti.setImageResource(R.drawable.bycycle_1);
+        }
 
     }
 
@@ -289,7 +366,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //region dinh tuyen chung
     private void DriectionMap(String tag, String mode) {
 
-        if (edFrom.getText().equals("")) {
+        String txtFrom = edFrom.getText().toString();
+        if (txtFrom.equals("")) {
             Toast.makeText(context, "Vui lòng chọn điểm đến", Toast.LENGTH_LONG).show();
         } else {
             switch (tag) {
@@ -314,7 +392,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //region clear all map
 
-    private void ClearMap() {
+    public static void ClearMap() {
         if (mMap != null)
             mMap.clear();
     }
@@ -333,7 +411,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             edTo.setText(String.valueOf(latLng.latitude).substring(0, 12) + "," + String.valueOf(latLng.longitude).substring(0, 12));
             TAG = CommonDefine.CURRENT_LOCATION;
             Mode = CommonDefine.MODE_DRIVING;
-            ClickModeCar();
+            ClickModeCar("single");
         }
     }
 
@@ -574,6 +652,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Toast.makeText(context, "Địa chỉ bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
         }
     }
+
+
+    public static void getLocationForMultiDirection(LatLng from, LatLng to, String googleMode) {
+        try {
+            mMap.addMarker(new MarkerOptions().position(from).icon(bitmapDescriptorFrom));
+
+
+            mMap.addMarker(new MarkerOptions().position(to).icon(bitmapDescriptorTo));
+
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(from);
+            builder.include(to);
+            LatLngBounds bound = builder.build();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 25), 1000, null);
+
+            DirectionGoogleMapFor2Point(from, to, googleMode);
+
+        } catch (Exception e) {
+            // Toast.makeText(context, "Địa chỉ bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
+        }
+    }
     //endregion
 
     private void DirectionGoogleMap(LatLng from, LatLng to, String mode) {
@@ -590,7 +689,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void DirectionGoogleMapFor2Point(LatLng from, LatLng to, String mode) {
+    private static void DirectionGoogleMapFor2Point(LatLng from, LatLng to, String mode) {
         // Getting URL to the Google Directions API
         // ClearMap();
         // mMap.addMarker(new MarkerOptions().position(longClickLocation));
@@ -606,7 +705,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //region dinh tuyen bang google map
 
-    private String getDirectionUrl(LatLng origin, LatLng dest, String modeGoogleMap) {
+    private static String getDirectionUrl(LatLng origin, LatLng dest, String modeGoogleMap) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
 
@@ -628,7 +727,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return url;
     }
 
-    private String downloadUrl(String strUrl) throws IOException {
+    private static String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
@@ -663,7 +762,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return data;
     }
 
-    private class DownloadTask extends AsyncTask<String, Void, String> {
+    private static class DownloadTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... url) {
@@ -690,7 +789,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+    private static class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
         // Parsing the data in non-ui thread
         @Override

@@ -246,12 +246,79 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/lnDrivingMulti"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/lnDriving"
+        android:background="@color/splashbackgroudcolor"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/rlCarMulti"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_oval_layout">
+
+            <ImageView
+                android:id="@+id/imCarMulti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:foregroundGravity="center"
+                android:src="@drawable/car_7" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlBicycleMulti"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imBicycleMulti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:foregroundGravity="center"
+                android:src="@drawable/bycycle_1" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlWalkMulti"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imWalkMulti"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:foregroundGravity="center"
+                android:src="@drawable/walking_2" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/lnDriving"
+        android:layout_below="@+id/lnDrivingMulti"
         map:uiZoomControls="true"
         tools:context="com.bkstek.stour.MapsActivity" />
 

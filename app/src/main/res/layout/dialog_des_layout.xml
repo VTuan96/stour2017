@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/splashbackgroudcolor"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/to"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerPois"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_below="@+id/relTitle"
+        android:layout_margin="5dp" />
+
+    <LinearLayout
+        android:id="@+id/layoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerPois"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:weightSum="2">
+
+
+        <Button
+            android:id="@+id/btnRoute"
+            style="@style/Button"
+            android:layout_width="120dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="Định tuyến" />
+    </LinearLayout>
+
+</RelativeLayout>

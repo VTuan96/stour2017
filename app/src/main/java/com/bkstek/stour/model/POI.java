@@ -8,6 +8,25 @@ public class POI {
     int Id;
     String Name;
     String Latitude;
+    String Image;
+
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String image) {
+        Image = image;
+    }
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
+
+    String Address;
 
     public int getId() {
         return Id;
