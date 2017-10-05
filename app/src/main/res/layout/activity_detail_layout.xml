@@ -511,11 +511,38 @@
                 android:layout_below="@+id/txtLoadMore"
                 android:background="@color/background_main" />
 
+            <RelativeLayout
+                android:id="@+id/youtube"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lnLine3">
+
+                <TextView
+                    android:id="@+id/txtLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="Link Video"
+                    android:textColor="@color/splashbackgroudcolor"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/lnLine4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/youtube"
+                android:background="@color/background_main" />
+
             <TextView
                 android:id="@+id/des"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/lnLine3"
+                android:layout_below="@+id/lnLine4"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
                 android:text="Description" />

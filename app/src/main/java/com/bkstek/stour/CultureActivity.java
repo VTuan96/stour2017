@@ -58,6 +58,7 @@ public class CultureActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerList = (RecyclerView) findViewById(R.id.recyclerList);
         imBack = (ImageView) findViewById(R.id.imBack);
+        recyclerList.setNestedScrollingEnabled(false);
         context = CultureActivity.this;
 
         toolbar.setTitle("");

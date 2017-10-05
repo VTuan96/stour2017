@@ -57,6 +57,7 @@ public class FoodActivity extends AppCompatActivity {
         recyclerList = (RecyclerView) findViewById(R.id.recyclerList);
         imBack = (ImageView) findViewById(R.id.imBack);
         context = FoodActivity.this;
+        recyclerList.setNestedScrollingEnabled(false);
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);

@@ -87,5 +87,7 @@ public interface CommonDefine {
 
     public static final String GOOGLEMAP_DIRECTION = "https://maps.googleapis.com/maps/api/directions/";
 
+    public static final String KEY_YOUTUBE = "AIzaSyB2W7h5EkA1-4Y0jQRcqMK6vvtqsJm8NNg";
+
 
 }

@@ -180,11 +180,27 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/rlDown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlPosition"
+        android:background="@color/splashbackgroudcolor"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/account"
+            android:src="@drawable/down1" />
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/lnDriving"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_below="@+id/rlPosition"
+        android:layout_below="@+id/rlDown"
         android:background="@color/splashbackgroudcolor"
         android:orientation="horizontal">
 

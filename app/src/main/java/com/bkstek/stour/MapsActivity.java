@@ -89,6 +89,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     RelativeLayout rlCarMulti, rlBicycleMulti, rlWalkMulti;
     ImageView imCarMulti, imBicycleMulti, imWalkMulti;
 
+    RelativeLayout rlDown;
+
     Context context;
     CircleButton btnSearch;
     public static BitmapDescriptor bitmapDescriptorTo;
@@ -143,6 +145,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         imBicycleMulti = (ImageView) findViewById(R.id.imBicycleMulti);
         imWalkMulti = (ImageView) findViewById(R.id.imWalkMulti);
 
+        rlDown = (RelativeLayout) findViewById(R.id.rlDown);
+
         context = MapsActivity.this;
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -185,6 +189,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rlBicycleMulti.setOnClickListener(this);
         rlWalkMulti.setOnClickListener(this);
 
+        rlDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rlDown.setVisibility(View.GONE);
+                rlPosition.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     //region onclick view
@@ -225,6 +237,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case R.id.rlMulti:
                 lnDrivingMulti.setVisibility(View.VISIBLE);
                 lnDriving.setVisibility(View.GONE);
+                rlDown.setVisibility(View.GONE);
                 ClickMultiLayout();
                 ClearMap();
                 setUpMap();
@@ -233,26 +246,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case R.id.rlCarMulti:
                 ClickModeCar("multi");
                 Mode = CommonDefine.MODE_DRIVING;
-                ClearMap();
-                for (int i = 1; i < latLngList.size(); i++) {
-                    MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                if (latLngList.size() == 0) {
+                    Toast.makeText(context, "Vui lòng chọn điểm xuất phát", Toast.LENGTH_SHORT).show();
+                } else if (latLngList.size() == 1) {
+                    Toast.makeText(context, "Vui lòng chọn điểm đến", Toast.LENGTH_SHORT).show();
+                } else {
+                    ClearMap();
+                    for (int i = 1; i < latLngList.size(); i++) {
+                        MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                    }
                 }
+
                 break;
             case R.id.rlBicycleMulti:
                 ClickModeBicycle("multi");
                 Mode = CommonDefine.MODE_BICYCLING;
-                ClearMap();
-                for (int i = 1; i < latLngList.size(); i++) {
-                    MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                if (latLngList.size() == 0) {
+                    Toast.makeText(context, "Vui lòng chọn điểm xuất phát", Toast.LENGTH_SHORT).show();
+                } else if (latLngList.size() == 1) {
+                    Toast.makeText(context, "Vui lòng chọn điểm đến", Toast.LENGTH_SHORT).show();
+                } else {
+                    ClearMap();
+                    for (int i = 1; i < latLngList.size(); i++) {
+                        MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                    }
                 }
+
                 break;
             case R.id.rlWalkMulti:
                 ClickModeWalk("multi");
                 Mode = CommonDefine.MODE_WALKING;
-                ClearMap();
-                for (int i = 1; i < latLngList.size(); i++) {
-                    MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                if (latLngList.size() == 0) {
+                    Toast.makeText(context, "Vui lòng chọn điểm xuất phát", Toast.LENGTH_SHORT).show();
+                } else if (latLngList.size() == 1) {
+                    Toast.makeText(context, "Vui lòng chọn điểm đến", Toast.LENGTH_SHORT).show();
+                } else {
+                    ClearMap();
+                    for (int i = 1; i < latLngList.size(); i++) {
+                        MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), Mode);
+                    }
                 }
+
                 break;
         }
     }
@@ -274,7 +308,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rlSingle.setBackgroundColor(Color.parseColor("#4487f2"));
         txtSingle.setTextColor(Color.parseColor("#ffffff"));
 
-        lnMultiRouting.setVisibility(View.VISIBLE);
+        lnMultiRouting.setVisibility(View.GONE);
         rlPosition.setVisibility(View.GONE);
     }
 
@@ -370,6 +404,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (txtFrom.equals("")) {
             Toast.makeText(context, "Vui lòng chọn điểm đến", Toast.LENGTH_LONG).show();
         } else {
+            rlDown.setVisibility(View.VISIBLE);
+            rlPosition.setVisibility(View.GONE);
             switch (tag) {
                 case CommonDefine.CURRENT_LOCATION:
                     DirectionGoogleMap(currentLocation, longClickLocation, mode);
@@ -588,7 +624,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(context, "Bạn chưa nhập địa chỉ điểm đến", Toast.LENGTH_LONG).show();
         } else {
             getLocationFromAddress(addressFrom, addressTo, googleMode);
-            RoutingInMap(locationFrom, locationTo);
+
         }
     }
     //endregion
@@ -619,34 +655,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getLocationFromAddress(String strAddressFrom, String strAddressTo, String googleMode) {
 
-        Geocoder coder = new Geocoder(this, Locale.getDefault());
+        Geocoder coder = new Geocoder(this, Locale.US);
         List<Address> addressFrom;
         List<Address> addressTo;
         try {
-            addressFrom = coder.getFromLocationName(strAddressFrom, 5);
-            addressTo = coder.getFromLocationName(strAddressTo, 5);
+            addressFrom = coder.getFromLocationName(strAddressFrom, 1);
+            addressTo = coder.getFromLocationName(strAddressTo, 1);
             try {
-                locationFrom = addressFrom.get(0);
-                locationTo = addressTo.get(0);
+                if (addressFrom.size() == 0) {
+                    Toast.makeText(context, "Địa chỉ điểm đi bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
+                } else if (addressTo.size() == 0) {
+                    Toast.makeText(context, "Địa chỉ điểm đến bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
+                } else {
+                    locationFrom = addressFrom.get(0);
+                    locationTo = addressTo.get(0);
+                    LatLng from = new LatLng(locationFrom.getLatitude(), locationFrom.getLongitude());
+
+                    mMap.addMarker(new MarkerOptions().position(from).icon(bitmapDescriptorFrom).title(strAddressFrom)).showInfoWindow();
+
+                    LatLng to = new LatLng(locationTo.getLatitude(), locationTo.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(to).icon(bitmapDescriptorTo).title(strAddressTo)).showInfoWindow();
+
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    builder.include(from);
+                    builder.include(to);
+                    LatLngBounds bound = builder.build();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 25), 1000, null);
+
+                    DirectionGoogleMapFor2Point(from, to, googleMode);
+                    RoutingInMap(locationFrom, locationTo);
+                }
             } catch (Exception e) {
-                Toast.makeText(context, "Địa chỉ bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
+                Log.d("error", e.toString());
             }
 
-
-            LatLng from = new LatLng(locationFrom.getLatitude(), locationFrom.getLongitude());
-
-            mMap.addMarker(new MarkerOptions().position(from).icon(bitmapDescriptorFrom).title(strAddressFrom)).showInfoWindow();
-
-            LatLng to = new LatLng(locationTo.getLatitude(), locationTo.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(to).icon(bitmapDescriptorTo).title(strAddressTo)).showInfoWindow();
-
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            builder.include(from);
-            builder.include(to);
-            LatLngBounds bound = builder.build();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 25), 1000, null);
-
-            DirectionGoogleMapFor2Point(from, to, googleMode);
 
         } catch (IOException e) {
             // Toast.makeText(context, "Địa chỉ bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
@@ -812,12 +854,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
 
-            ArrayList<LatLng> points = null;
-            PolylineOptions lineOptions = null;
+            ArrayList<LatLng> points = new ArrayList<LatLng>();
+            PolylineOptions lineOptions = new PolylineOptions();
 
             for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList<LatLng>();
-                lineOptions = new PolylineOptions();
 
                 List<HashMap<String, String>> path = result.get(i);
 
@@ -841,6 +881,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
 
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Log.d("error", e.toString());
+            }
             // Drawing polyline in the Google Map for the i-th route
             mMap.addPolyline(lineOptions);
         }

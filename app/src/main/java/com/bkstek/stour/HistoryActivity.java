@@ -56,6 +56,7 @@ public class HistoryActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerList = (RecyclerView) findViewById(R.id.recyclerList);
         imBack = (ImageView) findViewById(R.id.imBack);
+        recyclerList.setNestedScrollingEnabled(false);
         context = HistoryActivity.this;
 
         toolbar.setTitle("");

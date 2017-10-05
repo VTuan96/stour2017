@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -31,6 +32,7 @@ import com.bkstek.stour.model.Banner;
 import com.bkstek.stour.model.Place;
 import com.bkstek.stour.util.FunctionHelper;
 import com.bkstek.stour.util.VolleySingleton;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -61,12 +63,16 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
     ViewPager vpSlides;
 
     ProgressBar pgOne, pgTwo, pgThree, pgFour, pgFive;
+    RelativeLayout youtube;
+    TextView txtLink;
 
     Context context;
     List<Banner> bannerList = new ArrayList<>();
 
     List<Fragment> fragments;
     AdapterSlider adapterSlider;
+
+    String video_id = "uYOMT3VYxvA";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,6 +96,9 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         pgThree = (ProgressBar) findViewById(R.id.pgThree);
         pgFour = (ProgressBar) findViewById(R.id.pgFour);
         pgFive = (ProgressBar) findViewById(R.id.pgFive);
+
+        youtube = (RelativeLayout) findViewById(R.id.youtube);
+        txtLink = (TextView) findViewById(R.id.txtLink);
 
         pgOne.setIndeterminate(false);
         pgOne.setMax(100);
@@ -125,6 +134,18 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         } else {
             new DialogInfo(context, "Không có kết nối internet!!!").show();
         }
+
+
+        youtube.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent iYoutube = new Intent(context, YoutubeActivity.class);
+                iYoutube.putExtra("VIDEO_ID", video_id);
+                iYoutube.putExtra("locationID", locationID);
+                iYoutube.putExtra("TAG", TAG);
+                startActivity(iYoutube);
+            }
+        });
 
         imBack.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,6 +6,8 @@
     <string name="account">Tài khoản</string>
     <string name="more">More</string>
 
+    <string name="back"> Quay lại</string>
+
     <string name="single_routing">Thông thường</string>
     <string name="multi_routing">Định tuyến đa điểm</string>
 
