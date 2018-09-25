@@ -2,9 +2,14 @@ package com.bkstek.stour;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +37,12 @@ import com.bkstek.stour.model.Banner;
 import com.bkstek.stour.model.Place;
 import com.bkstek.stour.util.FunctionHelper;
 import com.bkstek.stour.util.VolleySingleton;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.squareup.picasso.Picasso;
 
@@ -41,6 +52,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.Manifest;
 
 import static com.bkstek.stour.util.CommonDefine.GET_FOOD_DETAIL;
 import static com.bkstek.stour.util.CommonDefine.GET_PLACE_DETAIL;
@@ -51,10 +63,10 @@ import static com.bkstek.stour.util.CommonDefine.GET_RESTAURANT_DETAIL;
  * Created by acebk on 8/3/2017.
  */
 
-public class DetailActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class DetailActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, OnMapReadyCallback{
 
-    ImageView imBack;
-    TextView txtPlaceName, txtReview, txtdistince, txtDes, txtAddress;
+    ImageView imBack, imPhone;
+    TextView txtPlaceName, txtReview, txtdistince, txtDes, txtAddress, txtPhone;
     RatingBar rbStarRate;
     String url;
     int locationID;
@@ -74,6 +86,9 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
 
     String video_id = "uYOMT3VYxvA";
 
+    private static final int REQUEST_CALL_PHONE_PERMISSION = 1;
+    private GoogleMap mMap;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +96,13 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         setContentView(R.layout.activity_detail_layout);
 
         imBack = (ImageView) findViewById(R.id.imBack);
+        imPhone = (ImageView) findViewById(R.id.imPhone);
         // imPlace = (ImageView) findViewById(R.id.imPlace);
         txtPlaceName = (TextView) findViewById(R.id.txtPlaceName);
         txtReview = (TextView) findViewById(R.id.txtReview);
         txtdistince = (TextView) findViewById(R.id.txtdistince);
+        txtPhone = (TextView) findViewById(R.id.txtPhone);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         rbStarRate = (RatingBar) findViewById(R.id.rbStarRate);
         txtDes = (TextView) findViewById(R.id.txtDes);
@@ -153,6 +171,43 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
                 Back();
             }
         });
+
+        //Show call screen
+        imPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("ImPhone: ", "clicked");
+
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+" + txtPhone.getText()));
+                // Here, thisActivity is the current activity
+                if (ContextCompat.checkSelfPermission(DetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // Permission has already been not granted
+                    return;
+                } else {
+                    // Permission has already been granted
+                    startActivity(intent);
+                }
+            }
+        });
+
+        rbStarRate.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Intent notifyIntent = new Intent(DetailActivity.this, NotifyActivity.class);
+                startActivity(notifyIntent);
+            }
+        });
+
+
+        //setup map
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void Back() {
@@ -239,6 +294,14 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
                             txtReview.setText(vcount);
                             txtDes.setText(Html.fromHtml(place.getLongDes()));
 
+                            Log.i("html: ", place.getLongDes());
+
+
+                            //set location of place
+                            LatLng loc = new LatLng(place.getLatitude(), place.getLongitude());
+                            mMap.addMarker(new MarkerOptions().position(loc).title(place.getName()));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
+
                         } catch (JSONException e) {
                             new DialogInfo(context, "Không thể lấy dữ liệu từ Server!!!").show();
                         }
@@ -291,5 +354,15 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney, Australia, and move the camera.
+//        LatLng sydney = new LatLng(-34, 151);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

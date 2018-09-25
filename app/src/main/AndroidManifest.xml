@@ -14,6 +14,8 @@
     <!-- EXTERNAL_STORAGE permissions are optional for Android 6.0 onwards. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -72,8 +74,9 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        
-        <activity android:name=".YoutubeActivity"></activity>
+        <activity android:name=".YoutubeActivity" />
+        <activity android:name=".NotifyActivity"
+            android:theme="@style/Theme.AppCompat.Dialog" ></activity>
     </application>
 
 </manifest>

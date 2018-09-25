@@ -204,42 +204,63 @@
 
             </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/imLocation"
+           <!--imLocation change into map fragment-->
+            <!--<ImageView-->
+                <!--android:id="@+id/imLocation"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="110dp"-->
+                <!--android:layout_below="@+id/rlRate"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:src="@drawable/location" />-->
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
-                android:layout_below="@+id/rlRate"
-                android:scaleType="centerCrop"
-                android:src="@drawable/location" />
+                android:id="@+id/map"
+                android:layout_below="@id/rlRate"
+                tools:context=".DetailActivity"
+                android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+            <TextView
+
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/map"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:text="@string/addr"
+                android:textColor="@color/text_detail_normal"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/txtAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imLocation"
+                android:layout_below="@+id/address"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
+                android:paddingTop="5dp"
                 android:text="@string/address"
                 android:textColor="@color/text_detail"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
-                android:id="@+id/address"
+                android:id="@+id/phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtAddress"
                 android:paddingLeft="10dp"
                 android:paddingTop="5dp"
-                android:text="@string/addr"
+                android:text="@string/sdt"
                 android:textColor="@color/text_detail_normal"
-                android:textSize="12sp" />
+                android:textSize="12sp"/>
 
             <LinearLayout
                 android:id="@+id/lnPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/address"
+                android:layout_below="@+id/phone"
                 android:orientation="horizontal">
 
                 <TextView
@@ -250,7 +271,7 @@
                     android:paddingTop="10dp"
                     android:text="@string/phone"
                     android:textColor="@color/text_detail"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"/>
 
                 <ImageView
                     android:id="@+id/imPhone"
@@ -264,22 +285,11 @@
             </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/lnPhone"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:text="@string/sdt"
-                android:textColor="@color/text_detail_normal"
-                android:textSize="12sp" />
-
             <RelativeLayout
                 android:id="@+id/lnLine1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@+id/phone"
+                android:layout_below="@+id/lnPhone"
                 android:layout_marginTop="10dp"
                 android:background="@color/background_main" />
 

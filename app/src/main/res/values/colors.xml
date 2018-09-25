@@ -5,10 +5,11 @@
     <color name="colorAccent">#FF4081</color>
     <color name="menu_disable">#cfcfcf</color>
     <color name="menu_enable">#4487f2</color>
-    <color name="text_detail">#343c45</color>
+    <color name="text_detail">#565f69</color>
     <color name="text_detail_normal">#b4babf</color>
+    <color name="text_notify_title">#929293</color>
     <!--// color splash screen-->
-    <color name="splashbackgroudcolor">#4487f2</color>
+    <color name="splashbackgroudcolor">#804487f2</color>
     <color name="white">#ffffff</color>
     <color name="black">#000</color>
     <color name="gray">#f4f3f3</color>
@@ -17,4 +18,6 @@
     <color name="text_main">#424242</color>
     <color name="placecolor">#4487f2</color>
     <color name="placecolor1">#ff6161</color>
+
+    <color name="default_background">#FAFAFA</color>
 </resources>

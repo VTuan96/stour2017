@@ -9,7 +9,7 @@
         android:id="@+id/txtCateName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:text="@string/account"
         android:textColor="@color/text_main"
         android:textSize="@dimen/text_cate"
@@ -19,6 +19,7 @@
         android:id="@+id/recyclerPlace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtCateName" />
+        android:layout_below="@+id/txtCateName"
+        android:layout_marginBottom="10dp"/>
 
 </RelativeLayout>

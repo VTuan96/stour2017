@@ -204,7 +204,7 @@
                             android:layout_gravity="center"
                             android:layout_marginTop="-20dp"
                             android:src="@drawable/ic_food"
-                            android:tint="@color/placecolor1" />
+                            android:tint="@color/menu_enable" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -234,7 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/recyclerCate"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginStart="15dp"
                     android:text="@string/hotel"
@@ -247,17 +247,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtHotel"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="30dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp" />
+                    />
 
                 <TextView
                     android:id="@+id/txtRes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/recyclerHotel"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginStart="15dp"
                     android:text="@string/restaurant"
@@ -270,10 +270,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtRes"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_marginEnd="15dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginStart="15dp" />
 
             </RelativeLayout>
 
