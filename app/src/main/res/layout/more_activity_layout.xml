@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,13 +20,80 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <TextView
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvSign"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/appbar"
-        android:gravity="center"
-        android:text="Chưa có dữ liệu"
-        android:textColor="@color/menu_enable"
-        android:textSize="30sp" />
+        android:layout_height="50dp"
+        android:background="@drawable/border_conner_image"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="#7a7cff"
+            android:text="Đăng ký / Đăng nhập"
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
+    </android.support.v7.widget.CardView>
 
-</RelativeLayout>
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvAccount"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/border_conner_image"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#7a7cff"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Tài khoản"
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvWeather"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/border_conner_image"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="#7a7cff"
+            android:text="Thời tiết"
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvSetting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/border_conner_image"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#7a7cff"
+            android:gravity="center"
+            android:text="Cài Đặt"
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
