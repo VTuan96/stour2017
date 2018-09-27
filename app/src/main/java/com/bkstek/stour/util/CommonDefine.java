@@ -90,4 +90,10 @@ public interface CommonDefine {
     public static final String KEY_YOUTUBE = "AIzaSyB2W7h5EkA1-4Y0jQRcqMK6vvtqsJm8NNg";
 
 
+    /*
+     ----------------       API Open Weather ---------------------
+     */
+    public static final String URL_OPEN_WEATHER = "http://api.openweathermap.org/data/2.5/weather?";
+    public static final String API_KEY_OPEN_WEATHER = "4d2a8ab0ce16ba243d26a225856a7f92";
+
 }
