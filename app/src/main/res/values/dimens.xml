@@ -7,4 +7,7 @@
     <dimen name="stour_text">10sp</dimen>
     <dimen name="width_img">220dp</dimen>
     <dimen name="height_img">120dp</dimen>
+    <dimen name="size5dp">5dp</dimen>
+    <dimen name="size8dp">8dp</dimen>
+    <dimen name="size10dp">10dp</dimen>
 </resources>

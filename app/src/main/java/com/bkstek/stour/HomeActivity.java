@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,8 @@ import com.bkstek.stour.model.History;
 import com.bkstek.stour.util.CommonDefine;
 import com.bkstek.stour.util.FunctionHelper;
 import com.bkstek.stour.util.VolleySingleton;
+import com.smarteist.autoimageslider.SliderLayout;
+import com.smarteist.autoimageslider.SliderView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,10 +81,11 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
     TextView[] txtDots;
     LinearLayout lnDots;
 
-    CardView cvHistory, cvFood, cvCultural;
+    CardView cvHistory, cvFood, cvCultural, cvFindFlight, cvFindHotel;
 
     AdapterHotel adapterHotel;
     AdapterRestaurant adapterRestaurant;
+    private SliderLayout sldHome;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,13 +94,22 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
         setContentView(R.layout.home_activity_layout);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        vpSlides = (ViewPager) findViewById(R.id.vpSlides);
+
+//        vpSlides = (ViewPager) findViewById(R.id.vpSlides);
+        sldHome = findViewById(R.id.sldHome);
+        sldHome.setIndicatorAnimation(SliderLayout.Animations.FILL); //set indicator animation by using SliderLayout.Animations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        sldHome.setScrollTimeInSec(4); //set scroll delay in seconds :
+
         lnDots = (LinearLayout) findViewById(R.id.lnDots);
         recyclerCate = (RecyclerView) findViewById(R.id.recyclerCate);
         recyclerCate.setNestedScrollingEnabled(false);
+
         cvHistory = (CardView) findViewById(R.id.cvHistory);
         cvFood = (CardView) findViewById(R.id.cvFood);
         cvCultural = (CardView) findViewById(R.id.cvCultural);
+        cvFindFlight = findViewById(R.id.cvFindFlight);
+        cvFindHotel = findViewById(R.id.cvFindHoltel);
+
         recyclerHotel = (RecyclerView) findViewById(R.id.recyclerHotel);
         recyclerRes = (RecyclerView) findViewById(R.id.recyclerRes);
         swRefresh = (SwipeRefreshLayout) findViewById(R.id.swRefresh);
@@ -140,6 +153,24 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                 startActivity(iFood);
             }
         });
+
+        cvFindFlight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iFlight = new Intent(context, MapsActivity.class);
+                iFlight.putExtra(CommonDefine.FUNC, "ROUTING");
+                startActivity(iFlight);
+            }
+        });
+
+        cvFindHotel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iHotel = new Intent(context, MapsActivity.class);
+                iHotel.putExtra(CommonDefine.FUNC, "SMART");
+                startActivity(iHotel);
+            }
+        });
     }
 
     @Override
@@ -175,9 +206,13 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                             for (int i = 0; i < count; i++) {
                                 JSONObject object = array.getJSONObject(i);
                                 Category category = new Category();
-                                category.setId(object.getInt("Id"));
-                                category.setName(object.getString("Name"));
-                                categoryList.add(category);
+                                if (i == 0 ) {
+                                    category.setId(object.getInt("Id"));
+                                    category.setName(object.getString("Name"));
+                                    category.setName("Di tích lịch sử");
+
+                                    categoryList.add(category);
+                                }
                             }
                             adapterCategory = new AdapterCategory(context, categoryList);
                             layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -282,14 +317,21 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
             bundle.putString("linkImage", linkImage.get(i).getUrlBanner());
             fragmentSlider.setArguments(bundle);
             fragments.add(fragmentSlider);
+
+            SliderView sliderView = new SliderView(context);
+            sliderView.setImageUrl(linkImage.get(i).getUrlBanner());
+            sliderView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            //at last add this view in your layout :
+            sldHome.addSliderView(sliderView);
         }
 
 
-        adapterSlider = new AdapterSlider(getSupportFragmentManager(), fragments);
-        vpSlides.setAdapter(adapterSlider);
-        adapterSlider.notifyDataSetChanged();
-        AddDotSlider(0);
-        vpSlides.addOnPageChangeListener(this);
+//        adapterSlider = new AdapterSlider(getSupportFragmentManager(), fragments);
+//        vpSlides.setAdapter(adapterSlider);
+//        adapterSlider.notifyDataSetChanged();
+//        AddDotSlider(0);
+//        vpSlides.addOnPageChangeListener(this);
 
     }
 
@@ -309,10 +351,13 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                             for (int i = 0; i < count; i++) {
                                 JSONObject object = array.getJSONObject(i);
                                 History hotel = new History();
-                                hotel.setId(object.getInt("Id"));
-                                hotel.setName(object.getString("Name"));
-                                hotel.setAvatar(object.getString("Avatar"));
-                                historyListHotel.add(hotel);
+                                boolean isActive = object.getBoolean("isActive");
+                                if (isActive) {
+                                    hotel.setId(object.getInt("Id"));
+                                    hotel.setName(object.getString("Name"));
+                                    hotel.setAvatar(object.getString("Avatar"));
+                                    historyListHotel.add(hotel);
+                                }
                             }
 
                             adapterHotel = new AdapterHotel(context, historyListHotel);
@@ -355,10 +400,13 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                             for (int i = 0; i < count; i++) {
                                 JSONObject object = array.getJSONObject(i);
                                 History res = new History();
-                                res.setId(object.getInt("Id"));
-                                res.setName(object.getString("Name"));
-                                res.setAvatar(object.getString("Avatar"));
-                                historyListRes.add(res);
+                                boolean isActive = object.getBoolean("isActive");
+                                if (isActive) {
+                                    res.setId(object.getInt("Id"));
+                                    res.setName(object.getString("Name"));
+                                    res.setAvatar(object.getString("Avatar"));
+                                    historyListRes.add(res);
+                                }
                             }
 
                             adapterRestaurant = new AdapterRestaurant(context, historyListRes);
@@ -419,7 +467,7 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
-            return;
+            ((HomeScreenActivity) HomeScreenActivity.context).finish();
         }
 
         this.doubleBackToExitPressedOnce = true;

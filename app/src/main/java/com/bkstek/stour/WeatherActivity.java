@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -45,7 +46,8 @@ public class WeatherActivity extends AppCompatActivity {
 
         gpsHelper = new GPSHelper(WeatherActivity.this);
         GetData(gpsHelper.getLatitude(), gpsHelper.getLongitude());
-
+        Toast.makeText(getApplicationContext(), gpsHelper.getLatitude() + " , " + gpsHelper.getLongitude(), Toast.LENGTH_LONG).show();
+        Log.d("Location changed: ", " lat = " + gpsHelper.getLatitude() + " , lon = " + gpsHelper.getLongitude());
 
     }
 

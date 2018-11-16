@@ -12,12 +12,9 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 
 public class GPSHelper implements LocationListener {
     private double latitude;
@@ -55,8 +52,11 @@ public class GPSHelper implements LocationListener {
         } else {
             // Acquire a reference to the system Location Manager
             LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            Location location = locationManager.getLastKnownLocation(provider);
+            if (location != null)
+                onLocationChanged(location);
+            else
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
         }
 
@@ -75,6 +75,8 @@ public class GPSHelper implements LocationListener {
     public void onLocationChanged(Location location) {
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
+        Log.d("Location changed: ", " lat = " + this.getLatitude() + " , lon = " + this.getLongitude());
+
     }
 
     @Override

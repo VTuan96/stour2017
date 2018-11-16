@@ -70,12 +70,16 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHo
 
                             for (int i = 0; i < count; i++) {
                                 JSONObject jsonObject = array.getJSONObject(i);
-                                Place place = new Place();
-                                place.setId(jsonObject.getInt("Id"));
-                                place.setName(jsonObject.getString("Name"));
-                                place.setAvatar(jsonObject.getString("Avatar"));
+                                boolean isActive = jsonObject.getBoolean("isActive");
+                                if (isActive) {
+                                    Place place = new Place();
+                                    place.setId(jsonObject.getInt("Id"));
+                                    place.setName(jsonObject.getString("Name"));
+                                    place.setAvatar(jsonObject.getString("Avatar"));
+                                    place.setVideoDir(jsonObject.getString("VideoDir"));
 
-                                placeList.add(place);
+                                    placeList.add(place);
+                                }
                             }
 
                             adapterPlace = new AdapterPlace(context, placeList);

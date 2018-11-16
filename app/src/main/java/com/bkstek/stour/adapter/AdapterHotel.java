@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.bkstek.stour.DetailActivity;
 import com.bkstek.stour.R;
+import com.bkstek.stour.ServiceActivity;
 import com.bkstek.stour.model.History;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -59,15 +61,16 @@ public class AdapterHotel extends RecyclerView.Adapter<AdapterHotel.ViewHolderHo
         holder.txtHotelName.setText(hotel.getName());
 
         Glide.with(context)
-                .load(hotel.getAvatar()).centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .load(hotel.getAvatar())
+                .apply(new RequestOptions()
+                        .centerCrop())
                 .into(holder.imgHotel);
 
         holder.imgHotel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent iDetail = new Intent(context, DetailActivity.class);
+                Intent iDetail = new Intent(context, ServiceActivity.class);
                 iDetail.putExtra("PlaceID", hotel.getId());
                 iDetail.putExtra("TAG", "HOTEL");
                 context.startActivity(iDetail);

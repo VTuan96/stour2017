@@ -10,10 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bkstek.stour.DetailActivity;
+import com.bkstek.stour.NoneServiceActivity;
 import com.bkstek.stour.R;
 import com.bkstek.stour.model.Place;
+import com.bkstek.stour.util.CommonDefine;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -56,21 +59,25 @@ public class AdapterPlace extends RecyclerView.Adapter<AdapterPlace.ViewHolderPl
     @Override
     public void onBindViewHolder(ViewHolderPlace holder, int position) {
         final Place place = placeList.get(position);
+        if (place.getName().length() > 40)
+            holder.txtPlaceName.setText(place.getName().substring(0,40) + "...");
+        else holder.txtPlaceName.setText(place.getName());
 
-        holder.txtPlaceName.setText(place.getName());
 
         Glide.with(context)
-                .load(place.getAvatar()).centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .load(place.getAvatar())
+                .apply(new RequestOptions()
+                        .centerCrop())
                 .into(holder.imgPlace);
 
         holder.imgPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent iDetail = new Intent(context, DetailActivity.class);
+                Intent iDetail = new Intent(context, NoneServiceActivity.class);
                 iDetail.putExtra("PlaceID", place.getId());
-                iDetail.putExtra("TAG", "HOME");
+                iDetail.putExtra(CommonDefine.TAG, "HOME");
+                iDetail.putExtra(CommonDefine.VIDEO_DIR, place.getVideoDir());
                 context.startActivity(iDetail);
 
             }

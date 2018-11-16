@@ -1,342 +1,391 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/lnChooseMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/splashbackgroudcolor"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:id="@+id/rlSingle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:background="@drawable/custom_oval_layout">
-
-            <TextView
-                android:id="@+id/txtSingle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="@string/single_routing"
-                android:textColor="@color/splashbackgroudcolor" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlMulti"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/txtMulti"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="@string/multi_routing"
-                android:textColor="@color/white" />
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/lnMultiRouting"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lnChooseMode"
-        android:background="@color/splashbackgroudcolor"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:id="@+id/rlButtonMultiRoute"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/custom_oval_layout"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="@string/multi_routing"
-                android:textColor="@color/splashbackgroudcolor" />
-        </RelativeLayout>
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:id="@+id/rlPosition"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_below="@+id/lnMultiRouting"
-        android:background="@color/background_map"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:id="@+id/lnFrom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/ic_mylocation" />
-
-                <EditText
-                    android:id="@+id/edFrom"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
-                    android:backgroundTint="@color/white"
-                    android:hint="@string/from"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/lnTo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/lnFrom"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/ic_place" />
-
-                <EditText
-                    android:id="@+id/edTo"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="5dp"
-                    android:backgroundTint="@color/white"
-                    android:hint="@string/to"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-
-        </RelativeLayout>
+        android:orientation="vertical">
 
 
         <LinearLayout
+            android:id="@+id/lnHeader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <at.markushi.ui.CircleButton
-                android:id="@+id/btnSearch"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/ic_direction1"
-                app:cb_color="@color/white"
-                app:cb_pressedRingWidth="8dip" />
+            <LinearLayout
+                android:id="@+id/lnChooseMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/splashbackgroudcolor"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/rlSingle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_oval_layout">
+
+                    <TextView
+                        android:id="@+id/txtSingle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/single_routing"
+                        android:textColor="@color/splashbackgroudcolor" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlMulti"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/txtMulti"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/multi_routing"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/lnMultiRouting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lnChooseMode"
+                android:background="@color/splashbackgroudcolor"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/rlButtonMultiRoute"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/custom_oval_layout"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/multi_routing"
+                        android:textColor="@color/splashbackgroudcolor" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/rlPosition"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/lnMultiRouting"
+                android:background="@color/background_map"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/lnFrom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/ic_mylocation" />
+
+                        <EditText
+                            android:id="@+id/edFrom"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:backgroundTint="@color/white"
+                            android:hint="@string/from"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lnTo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lnFrom"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/ic_place" />
+
+                        <EditText
+                            android:id="@+id/edTo"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:backgroundTint="@color/white"
+                            android:hint="@string/to"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+
+                    <at.markushi.ui.CircleButton
+                        android:id="@+id/btnSearch"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:src="@drawable/ic_direction1"
+                        app:cb_color="@color/white"
+                        app:cb_pressedRingWidth="8dip" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlPosition"
+                android:background="@color/splashbackgroudcolor"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/account"
+                    android:src="@drawable/down1" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/lnDriving"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/rlDown"
+                android:background="@color/splashbackgroudcolor"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/rlCar"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_oval_layout">
+
+                    <ImageView
+                        android:id="@+id/imCar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/car_7" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlBicycle"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imBicycle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/bycycle_1" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlWalk"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imWalk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/walking_2" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lnDrivingMulti"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/lnDriving"
+                android:background="@color/splashbackgroudcolor"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/rlCarMulti"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_oval_layout">
+
+                    <ImageView
+                        android:id="@+id/imCarMulti"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/car_7" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlBicycleMulti"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imBicycleMulti"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/bycycle_1" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlWalkMulti"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imWalkMulti"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:foregroundGravity="center"
+                        android:src="@drawable/walking_2" />
+                </RelativeLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
 
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/rlDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rlPosition"
-        android:background="@color/splashbackgroudcolor"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/account"
-            android:src="@drawable/down1" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/lnDriving"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/rlDown"
-        android:background="@color/splashbackgroudcolor"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:id="@+id/rlCar"
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_weight="1"
-            android:background="@drawable/custom_oval_layout">
-
-            <ImageView
-                android:id="@+id/imCar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:foregroundGravity="center"
-                android:src="@drawable/car_7" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlBicycle"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/imBicycle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:foregroundGravity="center"
-                android:src="@drawable/bycycle_1" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlWalk"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/imWalk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:foregroundGravity="center"
-                android:src="@drawable/walking_2" />
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/lnDrivingMulti"
+            map:uiZoomControls="true"
+            tools:context="com.bkstek.stour.MapsActivity" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/lnDrivingMulti"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/lnDriving"
-        android:background="@color/splashbackgroudcolor"
-        android:orientation="horizontal"
-        android:visibility="gone">
+    <!--<android.support.v7.widget.CardView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_margin = "@dimen/size5dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:id="@+id/cvInfoDes">-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="vertical">-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Thu Vien Ta Quang Buu"-->
+                <!--android:id="@+id/txtTitleDes"-->
+                <!--android:textStyle="bold"-->
+                <!--android:padding="10dp"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/txtDistanceDes"-->
+                <!--android:text="4km"-->
+                <!--android:layout_marginLeft="10dp"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/txtDurationDes"-->
+                <!--android:text="20 phut"-->
+                <!--android:layout_marginLeft="10dp"/>-->
+        <!--</LinearLayout>-->
+    <!--</android.support.v7.widget.CardView>-->
 
-        <RelativeLayout
-            android:id="@+id/rlCarMulti"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_weight="1"
-            android:background="@drawable/custom_oval_layout">
-
-            <ImageView
-                android:id="@+id/imCarMulti"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:foregroundGravity="center"
-                android:src="@drawable/car_7" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlBicycleMulti"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/imBicycleMulti"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:foregroundGravity="center"
-                android:src="@drawable/bycycle_1" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlWalkMulti"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/imWalkMulti"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:foregroundGravity="center"
-                android:src="@drawable/walking_2" />
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/lnDrivingMulti"
-        map:uiZoomControls="true"
-        tools:context="com.bkstek.stour.MapsActivity" />
-
-</RelativeLayout>
+</FrameLayout>
 

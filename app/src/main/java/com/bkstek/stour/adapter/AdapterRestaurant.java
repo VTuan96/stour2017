@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.bkstek.stour.DetailActivity;
 import com.bkstek.stour.R;
+import com.bkstek.stour.ServiceActivity;
 import com.bkstek.stour.model.History;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -60,15 +62,16 @@ public class AdapterRestaurant extends RecyclerView.Adapter<AdapterRestaurant.Vi
         holder.txtResName.setText(res.getName());
 
         Glide.with(context)
-                .load(res.getAvatar()).centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .load(res.getAvatar())
+                .apply(new RequestOptions()
+                        .centerCrop())
                 .into(holder.imgRes);
 
         holder.imgRes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent iDetail = new Intent(context, DetailActivity.class);
+                Intent iDetail = new Intent(context, ServiceActivity.class);
                 iDetail.putExtra("PlaceID", res.getId());
                 iDetail.putExtra("TAG", "RES");
                 context.startActivity(iDetail);

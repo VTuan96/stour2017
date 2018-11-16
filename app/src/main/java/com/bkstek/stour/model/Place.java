@@ -9,6 +9,47 @@ public class Place {
     String Name;
     String LongDes;
     double Longitude;
+    double Latitude;
+    String Address;
+    int Star;
+    int ViewCount;
+    String Avatar;
+    String PhoneNumber;
+    String VideoDir;
+    String OpenDate;
+    String Audio;
+
+    public String getAudio() {
+        return Audio;
+    }
+
+    public void setAudio(String audio) {
+        Audio = audio;
+    }
+
+    public String getOpenDate() {
+        return OpenDate;
+    }
+
+    public void setOpenDate(String openDate) {
+        OpenDate = openDate;
+    }
+
+    public String getVideoDir() {
+        return VideoDir;
+    }
+
+    public void setVideoDir(String videoDir) {
+        VideoDir = videoDir;
+    }
+
+    public String getPhoneNumber() {
+        return PhoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        PhoneNumber = phoneNumber;
+    }
 
     public String getAddress() {
         return Address;
@@ -17,8 +58,6 @@ public class Place {
     public void setAddress(String address) {
         Address = address;
     }
-
-    String Address;
 
     public double getLongitude() {
         return Longitude;
@@ -36,8 +75,6 @@ public class Place {
         Latitude = latitude;
     }
 
-    double Latitude;
-
     public String getLongDes() {
         return LongDes;
     }
@@ -45,7 +82,6 @@ public class Place {
     public void setLongDes(String longDes) {
         LongDes = longDes;
     }
-
 
     public int getStar() {
         return Star;
@@ -63,10 +99,6 @@ public class Place {
         ViewCount = viewCount;
     }
 
-
-    int Star;
-    int ViewCount;
-
     public String getAvatar() {
         return Avatar;
     }
@@ -74,8 +106,6 @@ public class Place {
     public void setAvatar(String avatar) {
         Avatar = avatar;
     }
-
-    String Avatar;
 
     public int getId() {
         return Id;

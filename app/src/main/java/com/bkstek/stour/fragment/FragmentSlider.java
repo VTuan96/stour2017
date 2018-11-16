@@ -29,7 +29,6 @@ public class FragmentSlider extends Fragment {
 
         Glide.with(getActivity())
                 .load(linkImage)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imSlider);
         return view;
     }

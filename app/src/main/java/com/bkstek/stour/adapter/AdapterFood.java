@@ -2,6 +2,7 @@ package com.bkstek.stour.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bkstek.stour.DetailActivity;
+import com.bkstek.stour.NoneServiceActivity;
 import com.bkstek.stour.R;
+import com.bkstek.stour.ServiceActivity;
 import com.bkstek.stour.model.History;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -37,14 +41,16 @@ public class AdapterFood extends RecyclerView.Adapter<AdapterFood.ViewlHolderFoo
         TextView txtName;
         RatingBar rbStar;
         TextView txtAddress;
+        CardView container;
 
         public ViewlHolderFood(View itemView) {
             super(itemView);
 
             imHis = (ImageView) itemView.findViewById(R.id.imHis);
             txtName = (TextView) itemView.findViewById(R.id.txtName);
-            rbStar = (RatingBar) itemView.findViewById(R.id.rbStar);
+//            rbStar = (RatingBar) itemView.findViewById(R.id.rbStar);
             txtAddress = (TextView) itemView.findViewById(R.id.txtAddress);
+            container = itemView.findViewById(R.id.cvContainFood);
         }
     }
 
@@ -60,21 +66,26 @@ public class AdapterFood extends RecyclerView.Adapter<AdapterFood.ViewlHolderFoo
     public void onBindViewHolder(ViewlHolderFood holder, int position) {
         final History history = historyList.get(position);
 
-        holder.txtName.setText(history.getName());
+        if (history.getName().length() > 20)
+            holder.txtName.setText(history.getName().substring(0,20) + "...");
+        else holder.txtName.setText(history.getName());
 
         Glide.with(context)
-                .load(history.getAvatar()).centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .load(history.getAvatar())
+                .apply(new RequestOptions()
+                        .centerCrop())
                 .into(holder.imHis);
 
-        holder.rbStar.setNumStars(history.getStar());
+//        holder.rbStar.setNumStars(history.getStar());
 
-        holder.txtAddress.setText(history.getAddress());
+        if (history.getAddress().length() > 60)
+            holder.txtAddress.setText(history.getAddress().substring(0,40) + "...");
+        else holder.txtAddress.setText(history.getAddress());
 
-        holder.imHis.setOnClickListener(new View.OnClickListener() {
+        holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent iDetail = new Intent(context, DetailActivity.class);
+                Intent iDetail = new Intent(context, NoneServiceActivity.class);
                 iDetail.putExtra("PlaceID", history.getId());
                 iDetail.putExtra("TAG", "FOOD");
                 context.startActivity(iDetail);

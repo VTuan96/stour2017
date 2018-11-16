@@ -2,13 +2,17 @@ package com.bkstek.stour;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +21,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,10 +33,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bkstek.stour.component.DialogPOIOrigin;
 import com.bkstek.stour.mapdigital.TileProviderFactory;
+import com.bkstek.stour.model.POI;
 import com.bkstek.stour.util.CommonDefine;
 import com.bkstek.stour.util.DirectionsJSONParser;
+import com.bkstek.stour.util.VolleySingleton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -49,7 +63,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
+import com.google.maps.android.data.geojson.GeoJsonLayer;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -65,14 +82,14 @@ import java.util.Locale;
 
 import at.markushi.ui.CircleButton;
 
-import static com.bkstek.stour.util.CommonDefine.GEOSERVER_FORMAT;
+import static com.bkstek.stour.util.CommonDefine.GET_HIS_PLACE;
 import static com.bkstek.stour.util.CommonDefine.GOOGLEMAP_DIRECTION;
 import static com.bkstek.stour.util.CommonDefine.WMS_FORMAT_ROUTE_STRING;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMapLongClickListener, View.OnClickListener {
+        LocationListener, GoogleMap.OnMapLongClickListener, View.OnClickListener{
 
     public static GoogleMap mMap;
     EditText edFrom, edTo;
@@ -91,7 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     RelativeLayout rlDown;
 
-    Context context;
+    public  static  Context context;
     CircleButton btnSearch;
     public static BitmapDescriptor bitmapDescriptorTo;
     public static BitmapDescriptor bitmapDescriptorFrom;
@@ -105,15 +122,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker mCurrLocationMarker;
     Location mLastLocation;
     LatLng currentLocation;
-    LatLng longClickLocation; //location of point long click map
+    LatLng longClickLocation = new LatLng(21.775414,105.4772916); //location of point long click map
     Marker marker; //marker use for long click map
 
     private String TAG = ""; // set tag for driection mode
 
     private String Mode = "";
+    private float RADIS_MAX = 230; //max radius POI (unit: m)
+    private long TIME_TO_UPDATE = 10000; // 10s
 
     //list latlong for multi direction
     List<LatLng> latLngList = new ArrayList<>();
+
+    //get test direction json file
+    String test_direction = "";
+
+    private String func = "ROUTING"; //default is routing
+
+    ArrayList<POI> listPOI = new ArrayList<>();
+    ArrayList<POI> tempPOI = new ArrayList<>();
+
+    private LinearLayout lnHeader;
+    SharedPreferences preferences ;
+
+    MediaPlayer mMediaPlayer;
+
+    //show information of destination
+    CardView cvInfoDes;
+    TextView txtTitleDes, txtDistanceDes, txtDurationDes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +181,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         imCarMulti = (ImageView) findViewById(R.id.imCarMulti);
         imBicycleMulti = (ImageView) findViewById(R.id.imBicycleMulti);
         imWalkMulti = (ImageView) findViewById(R.id.imWalkMulti);
+        lnHeader = findViewById(R.id.lnHeader);
+
+//        cvInfoDes = findViewById(R.id.cvInfoDes);
+//        txtDistanceDes = findViewById(R.id.txtDistanceDes);
+//        txtDurationDes = findViewById(R.id.txtDurationDes);
 
         rlDown = (RelativeLayout) findViewById(R.id.rlDown);
 
@@ -154,10 +196,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
+        //get intent data
+        getIntentData();
+
+        //check status of location
+        statusCheck();
+
+        //get shareprefences
+        preferences = getSharedPreferences(CommonDefine.SETTING, MODE_PRIVATE);
+        RADIS_MAX = Float.parseFloat(preferences.getString(CommonDefine.RADIUS_ACCESS, "50"));
+        TIME_TO_UPDATE = Long.parseLong(preferences.getString(CommonDefine.TIME_UPDATE_LOCATION, "10")) * 1000;
+
+        if (func.equals(CommonDefine.SMART)){
+            lnHeader.setVisibility(View.GONE);
+        } else {
+            lnHeader.setVisibility(View.VISIBLE);
+        }
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        mSettingsClient = LocationServices.getSettingsClient(this);
+
+//        createLocationCallback();
+//        createLocationRequest();
+//        buildLocationSettingsRequest();
+
 
         bitmapDescriptorFrom
                 = BitmapDescriptorFactory.defaultMarker(
@@ -197,6 +266,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        test_direction = readRawFiles(R.raw.test_direction);
+    }
+
+
+    private void getIntentData() {
+        Intent intent = getIntent();
+        if (intent != null)
+            func = intent.getStringExtra(CommonDefine.FUNC);
+        else
+            func = "ROUTING";
     }
 
     //region onclick view
@@ -213,25 +292,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int id = view.getId();
         switch (id) {
             case R.id.rlCar:
+                ClearMap();
                 ClickModeCar("single");
                 Mode = CommonDefine.MODE_DRIVING;
                 DriectionMap(TAG, Mode);
+//                setUpMap();
                 break;
             case R.id.rlBicycle:
                 ClickModeBicycle("single");
                 Mode = CommonDefine.MODE_BICYCLING;
                 DriectionMap(TAG, Mode);
+                ClearMap();
+//                setUpMap();
                 break;
             case R.id.rlWalk:
+                ClearMap();
                 ClickModeWalk("single");
                 Mode = CommonDefine.MODE_WALKING;
                 DriectionMap(TAG, Mode);
+//                setUpMap();
                 break;
             case R.id.rlSingle:
+                ClearMap();
                 lnDrivingMulti.setVisibility(View.GONE);
                 lnDriving.setVisibility(View.VISIBLE);
                 ClickSingleLayout();
-                ClearMap();
                 setUpMap();
                 break;
             case R.id.rlMulti:
@@ -241,7 +326,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ClickMultiLayout();
                 ClearMap();
                 setUpMap();
-                new DialogPOIOrigin(context, latLngList).show();
+                latLngList = new ArrayList<>();
+                tempPOI = new ArrayList<>();
+                new DialogPOIOrigin(context, listPOI, tempPOI, latLngList, func).show();
                 break;
             case R.id.rlCarMulti:
                 ClickModeCar("multi");
@@ -399,7 +486,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //region dinh tuyen chung
     private void DriectionMap(String tag, String mode) {
-
         String txtFrom = edFrom.getText().toString();
         if (txtFrom.equals("")) {
             Toast.makeText(context, "Vui lòng chọn điểm đến", Toast.LENGTH_LONG).show();
@@ -438,16 +524,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapLongClick(LatLng latLng) {
         if (mMap != null) {
-            if (marker != null) {
-                marker.remove();
+            if (func.equals(CommonDefine.ROUTING)) {
+                if (marker != null) {
+                    marker.remove();
+                }
+                ClearMap();
+                marker = mMap.addMarker(new MarkerOptions().position(latLng));
+                longClickLocation = latLng;
+                edTo.setText(String.valueOf(latLng.latitude).substring(0, 12) + "," + String.valueOf(latLng.longitude).substring(0, 12));
+                TAG = CommonDefine.CURRENT_LOCATION;
+                Mode = CommonDefine.MODE_DRIVING;
+                ClickModeCar("single");
             }
-            ClearMap();
-            marker = mMap.addMarker(new MarkerOptions().position(latLng));
-            longClickLocation = latLng;
-            edTo.setText(String.valueOf(latLng.latitude).substring(0, 12) + "," + String.valueOf(latLng.longitude).substring(0, 12));
-            TAG = CommonDefine.CURRENT_LOCATION;
-            Mode = CommonDefine.MODE_DRIVING;
-            ClickModeCar("single");
         }
     }
 
@@ -465,12 +553,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        //set interval location request update
+        TIME_TO_UPDATE = Long.parseLong(preferences.getString(CommonDefine.TIME_UPDATE_LOCATION, "10")) * 1000;
         mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(TIME_TO_UPDATE);
+        mLocationRequest.setFastestInterval(TIME_TO_UPDATE);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
+
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
     }
@@ -486,22 +579,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(final Location location) {
 
+//        Toast.makeText(context, "Location changed \n Lat: " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+
+        currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
 
-
         //Showing Current Location Marker on Map
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        final LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
+        markerOptions.position(myLatLng);
 
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        String provider = locationManager.getBestProvider(new Criteria(), true);
+//        locationManager.requestLocationUpdates(provider, 1000, 0, this);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -513,41 +606,244 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Location locations = locationManager.getLastKnownLocation(provider);
-        List<String> providerList = locationManager.getAllProviders();
-        if (null != locations && null != providerList && providerList.size() > 0) {
-            double longitude = locations.getLongitude();
-            double latitude = locations.getLatitude();
-            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-            try {
-                List<Address> listAddresses = geocoder.getFromLocation(latitude, longitude, 1);
-                if (null != listAddresses && listAddresses.size() > 0) {
-
-//                    Here we are finding , whatever we want our marker to show when clicked
-                    String state = listAddresses.get(0).getAdminArea();
-                    String country = listAddresses.get(0).getCountryName();
-                    String subLocality = listAddresses.get(0).getSubLocality();
-                    markerOptions.title("" + latLng + "," + subLocality + "," + state + "," + country);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
 
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
 //        mCurrLocationMarker = mMap.addMarker(markerOptions);
 
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 
-        //this code stops location updates
-        if (mGoogleApiClient != null) {
-            mLastLocation = location;
-            currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        /*---------------check near object interest POI----------------------*/
+        //get list POI
+
+//        getIntentData();
+        if (func.equals("SMART")){
+            //get radius access POI
+            RADIS_MAX = Float.parseFloat(preferences.getString(CommonDefine.RADIUS_ACCESS, "50"));
+
+            //create new list POIs
+            listPOI = new ArrayList<>();
+            tempPOI = new ArrayList<>();
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, GET_HIS_PLACE,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                //nearest POI
+                                POI minPOI = null;
+                                float minDistance = RADIS_MAX;
+
+                                JSONArray array = response.getJSONArray("Data");
+                                int count = array.length();
+                                for (int i = 0; i < count; i++) {
+                                    JSONObject object = array.getJSONObject(i);
+                                    boolean isActive = object.getBoolean("isActive");
+                                    if (isActive) {
+                                        JSONArray array1 = object.getJSONArray("FileAttachs");
+                                        JSONObject object1 = array1.getJSONObject(0);
+
+                                        POI poi = new POI();
+                                        poi.setId(object.getInt("Id"));
+                                        poi.setName(object.getString("Name"));
+                                        poi.setLatitude(object.getDouble("Latitude"));
+                                        poi.setLongitude(object.getDouble("Longitude"));
+                                        poi.setImage(object1.getString("FileUrl"));
+                                        poi.setAddress(object.getString("Address"));
+                                        poi.setVideoDir(object.getString("VideoDir"));
+
+                                        listPOI.add(poi);
+                                    }
+                                }
+                                //show all POI markers
+                                showAllPOIMarkers(listPOI);
+
+                                for (POI poi : listPOI){
+                                    Location locDest = new Location("dest");
+                                    locDest.setLatitude(poi.getLatitude());
+                                    locDest.setLongitude(poi.getLongitude());
+                                    float distance = location.distanceTo(locDest);
+
+                                    if (distance < minDistance) {
+                                        minDistance = distance;
+                                        minPOI = poi;
+                                    }
+                                }
+
+                                if (minDistance <= RADIS_MAX ) { //check distance to POI to RADIUS_MAX
+                                    if ( minPOI != null) {
+//                                        try {
+//                                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+//                                            r.play();
+//                                        } catch (Exception e) {
+//                                            e.printStackTrace();
+//                                        }
+
+                                        mMediaPlayer = MediaPlayer.create(context, R.raw.raw_find_out);
+                                        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                        mMediaPlayer.start();
+
+                                        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                            @Override
+                                            public void onCompletion(MediaPlayer mp) {
+                                                mp.release();
+                                            }
+                                        });
+
+                                        Toast.makeText(MapsActivity.this, "Bạn đang ở gần " + minPOI.getName(), Toast.LENGTH_SHORT).show();
+
+                                        LatLng latLng = new LatLng(minPOI.getLatitude(), minPOI.getLongitude());
+                                        MarkerOptions markerOptions1 = new MarkerOptions();
+                                        markerOptions1.position(latLng);
+                                        markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                        markerOptions1.title(minPOI.getName());
+                                        markerOptions1.visible(true);
+
+                                        //move map camera
+                                        Marker markerPOI = mMap.addMarker(markerOptions1);
+                                        markerPOI.showInfoWindow();
+                                        markerPOI.setTag(minPOI);
+//                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//                                        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+
+                                        //routing to POI
+                                        DirectionGoogleMapFor2Point(myLatLng, latLng, CommonDefine.MODE_WALKING);
+                                    } else {
+                                        try {
+//                                            mMediaPlayer = MediaPlayer.create(context, R.raw.raw_not_found);
+//                                            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//                                            mMediaPlayer.start();
+//
+//                                            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                                                @Override
+//                                                public void onCompletion(MediaPlayer mp) {
+//                                                    mp.release();
+//                                                }
+//                                            });
+
+
+                                            //alert not found poi ringstone
+                                            alarmRingStone(R.raw.raw_not_found);
+
+                                            Toast.makeText(MapsActivity.this, "Không có địa điểm nào trong bán kính " + (int ) RADIS_MAX + "m", Toast.LENGTH_SHORT).show();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                } else {
+                                    try {
+                                        mMediaPlayer = MediaPlayer.create(context, R.raw.raw_not_found);
+                                        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                                        mMediaPlayer.start();
+
+                                        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                            @Override
+                                            public void onCompletion(MediaPlayer mp) {
+                                                mp.release();
+                                            }
+                                        });
+
+                                        Toast.makeText(MapsActivity.this, "Không có địa điểm nào trong bán kính " + (int ) RADIS_MAX + "m", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            } catch (JSONException e) {
+
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+
+            int socketTimeout = 30000;//30 seconds - change to what you want
+            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            request.setRetryPolicy(policy);
+
+            VolleySingleton.getInstance(context).addToRequestQueue(request);
+
+        } else {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                marker.showInfoWindow();
+                POI poi = (POI) marker.getTag();
+                if (poi != null) {
+                    String VideoDir = poi.getVideoDir();
+                    int locationID = poi.getId();
+                    Intent iYoutube = new Intent(context, YoutubeActivity.class);
+                    iYoutube.putExtra("VIDEO_ID", VideoDir);
+                    iYoutube.putExtra("locationID", locationID);
+                    iYoutube.putExtra("TAG", CommonDefine.SMART);
+                    iYoutube.putExtra(CommonDefine.TITLE, poi.getName());
+                    context.startActivity(iYoutube);
+                }
+                return true;
+            }
+        });
+
+    }
+
+    //notifycation ringstone
+    private void alarmRingStone(int raw){
+        mMediaPlayer = MediaPlayer.create(context, raw);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.start();
+
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
+    }
+
+
+    private void showAllPOIMarkers(ArrayList<POI> listPOIs) {
+        //clear all marker on map
+        mMap.clear();
+
+        for (POI poi: listPOIs){
+            LatLng latLng = new LatLng(poi.getLatitude(), poi.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            markerOptions.title(poi.getName());
+
+            Marker marker = mMap.addMarker(markerOptions);
+//            marker.showInfoWindow();
+            marker.setTag(poi);
+
+        }
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                marker.showInfoWindow();
+                POI poi = (POI) marker.getTag();
+                String VideoDir = poi.getVideoDir();
+                int locationID = poi.getId();
+                Intent iYoutube = new Intent(context, YoutubeActivity.class);
+                iYoutube.putExtra("VIDEO_ID", VideoDir);
+                iYoutube.putExtra("locationID", locationID);
+                iYoutube.putExtra("TAG", CommonDefine.SMART);
+                iYoutube.putExtra(CommonDefine.TITLE, poi.getName());
+                startActivity(iYoutube);
+
+                return true;
+            }
+        });
     }
 
 
@@ -581,6 +877,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -632,8 +929,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //region set up digital map
 
     private void setUpMap() {
-        TileProvider tileProvider = TileProviderFactory.getTileProvider(GEOSERVER_FORMAT);
-        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
+//        TileProvider tileProvider = TileProviderFactory.getTileProvider(GEOSERVER_FORMAT);
+//        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
+
+        try {
+            GeoJsonLayer layer = new GeoJsonLayer(mMap, R.raw.test_bkhn, getApplicationContext());
+            //set color to geojson map
+            layer.getDefaultLineStringStyle().setColor(Color.YELLOW);
+            layer.addLayerToMap();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     //endregion
@@ -715,12 +1023,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Toast.makeText(context, "Địa chỉ bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
         }
     }
+
+    public static void getLocationForMultiDirectionPOI(POI from, POI to, String googleMode) {
+        try {
+            LatLng fromLat = new LatLng(from.getLatitude(), from.getLongitude());
+            LatLng toLon = new LatLng(to.getLatitude(), to.getLongitude());
+
+            Marker markerFrom = mMap.addMarker(new MarkerOptions()
+                                                .position(fromLat)
+                                                .icon(bitmapDescriptorTo)
+                                                .title(from.getName()));
+            markerFrom.showInfoWindow();
+            markerFrom.setTag(from);
+
+            Marker markerTo = mMap.addMarker(new MarkerOptions()
+                                                .position(toLon)
+                                                .icon(bitmapDescriptorFrom)
+                                                .title(to.getName()));
+            markerTo.showInfoWindow();
+            markerTo.setTag(to);
+
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(fromLat);
+            builder.include(toLon);
+            LatLngBounds bound = builder.build();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 25), 1000, null);
+
+            DirectionGoogleMapFor2Point(fromLat,toLon , googleMode);
+
+        } catch (Exception e) {
+            // Toast.makeText(context, "Địa chỉ bạn nhập không tồn tại. Vui lòng nhập lại", Toast.LENGTH_LONG).show();
+        }
+    }
     //endregion
 
     private void DirectionGoogleMap(LatLng from, LatLng to, String mode) {
         // Getting URL to the Google Directions API
         ClearMap();
-//        setUpMap();
+        setUpMap();
         mMap.addMarker(new MarkerOptions().position(longClickLocation));
         String url = getDirectionUrl(from, to, mode);
 
@@ -764,7 +1104,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Output format
         String output = "json";
         // Building the url to the web service
-        String url = GOOGLEMAP_DIRECTION + output + "?" + parameters;
+        String url = GOOGLEMAP_DIRECTION + output + "?" + parameters + "&key=AIzaSyBcR6y_giPahewOFi2Hv78KpaBPLIZEut0";
+
+        Log.d("GOOGLE_MAP_DIRECTION", url);
 
         return url;
     }
@@ -804,6 +1146,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return data;
     }
 
+
     private static class DownloadTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -842,9 +1185,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             try {
                 jObject = new JSONObject(jsonData[0]);
+                Log.d("Vutuan", jObject.toString());
+
                 DirectionsJSONParser parser = new DirectionsJSONParser();
 
                 routes = parser.parse(jObject);
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -917,6 +1264,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         } else {
             buildGoogleApiClient();
+
+            //show button My Location
             mMap.setMyLocationEnabled(true);
         }
 
@@ -927,6 +1276,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             SetDefault();
             mMap.setOnMapLongClickListener(this);
         }
+
     }
 
     public void hideSoftKeyboard() {
@@ -936,5 +1286,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public String readRawFiles(int rawFile) {
+        String str="";
+        StringBuffer buf = new StringBuffer();
+        InputStream is = null;
+        try {
+            is = this.getResources().openRawResource(rawFile);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            if (is != null) {
+                while ((str = reader.readLine()) != null) {
+                    buf.append(str + "\n");
+                }
+            }
+        }
+        catch (IOException ex){
+            ex.printStackTrace();
+        }
+        finally{
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
+        str = buf.toString();
+        return str;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,  this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,  this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
+    public void statusCheck() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+
+        }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 }

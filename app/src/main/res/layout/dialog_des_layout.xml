@@ -23,7 +23,7 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/recyclerPois"
         android:layout_width="match_parent"
         android:layout_height="380dp"

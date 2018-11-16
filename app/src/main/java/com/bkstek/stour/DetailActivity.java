@@ -7,17 +7,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Spannable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -35,7 +36,9 @@ import com.bkstek.stour.component.DialogInfo;
 import com.bkstek.stour.fragment.FragmentSlider;
 import com.bkstek.stour.model.Banner;
 import com.bkstek.stour.model.Place;
+import com.bkstek.stour.util.CommonDefine;
 import com.bkstek.stour.util.FunctionHelper;
+import com.bkstek.stour.util.PicassoImageGetter;
 import com.bkstek.stour.util.VolleySingleton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,7 +47,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.squareup.picasso.Picasso;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,11 +56,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import android.Manifest;
+import android.widget.Toast;
+
 
 import static com.bkstek.stour.util.CommonDefine.GET_FOOD_DETAIL;
 import static com.bkstek.stour.util.CommonDefine.GET_PLACE_DETAIL;
 import static com.bkstek.stour.util.CommonDefine.GET_HOTEL_DETAIL;
 import static com.bkstek.stour.util.CommonDefine.GET_RESTAURANT_DETAIL;
+
 
 /**
  * Created by acebk on 8/3/2017.
@@ -73,6 +79,10 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
     String TAG;
     Toolbar toolbar;
     ViewPager vpSlides;
+    String title = "";
+
+    //my edit code here
+    WebView wvDes;
 
     ProgressBar pgOne, pgTwo, pgThree, pgFour, pgFive;
     RelativeLayout youtube;
@@ -88,6 +98,9 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
 
     private static final int REQUEST_CALL_PHONE_PERMISSION = 1;
     private GoogleMap mMap;
+
+    private static final String mimeType = "text/html";
+    private static final String encoding = "UTF-8";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,9 +118,15 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         rbStarRate = (RatingBar) findViewById(R.id.rbStarRate);
+
+        /*
+            Change textView to webView to show description html content
+         */
         txtDes = (TextView) findViewById(R.id.txtDes);
+//        wvDes = findViewById(R.id.wvDes);
+
         txtAddress = (TextView) findViewById(R.id.txtAddress);
-        vpSlides = (ViewPager) findViewById(R.id.vpSlides);
+//        vpSlides = (ViewPager) findViewById(R.id.vpSlides);
 
         pgOne = (ProgressBar) findViewById(R.id.pgOne);
         pgTwo = (ProgressBar) findViewById(R.id.pgTwo);
@@ -147,12 +166,16 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         locationID = intent.getIntExtra("PlaceID", 0);
         TAG = intent.getStringExtra("TAG");
 
-        if (FunctionHelper.isNetworkConnected(context)) {
+
+        // Permission is not granted
+        boolean checkNetWork = FunctionHelper.isNetworkConnected(context);
+        if (checkNetWork) {
             GetData(locationID);
         } else {
             new DialogInfo(context, "Không có kết nối internet!!!").show();
         }
 
+//        GetData(locationID);
 
         youtube.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +184,7 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
                 iYoutube.putExtra("VIDEO_ID", video_id);
                 iYoutube.putExtra("locationID", locationID);
                 iYoutube.putExtra("TAG", TAG);
+                iYoutube.putExtra(CommonDefine.TITLE, title);
                 startActivity(iYoutube);
             }
         });
@@ -176,11 +200,9 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         imPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("ImPhone: ", "clicked");
-
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+" + txtPhone.getText()));
                 // Here, thisActivity is the current activity
-                if (ContextCompat.checkSelfPermission(DetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // Permission has already been not granted
                     return;
                 } else {
@@ -193,7 +215,7 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         rbStarRate.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                Intent notifyIntent = new Intent(DetailActivity.this, NotifyActivity.class);
+                Intent notifyIntent = new Intent(context, NotifyActivity.class);
                 startActivity(notifyIntent);
             }
         });
@@ -203,6 +225,8 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
 
     @Override
@@ -268,12 +292,14 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
                             place.setId(object.getInt("Id"));
                             place.setAvatar(object.getString("Avatar"));
                             place.setName(object.getString("Name"));
-                            place.setStar(object.getInt("Star"));
+//                            place.setStar(object.getInt("Star"));
                             place.setViewCount(object.getInt("ViewCount"));
                             place.setLongDes(object.getString("LongDes"));
                             place.setLatitude(object.getDouble("Latitude"));
                             place.setLongitude(object.getDouble("Longitude"));
                             place.setAddress(object.getString("Address"));
+
+                            title = object.getString("Name");
 
                             JSONArray array = object.getJSONArray("FileAttachs");
                             int count = array.length();
@@ -292,17 +318,23 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
                             String vcount = String.valueOf(place.getViewCount()) + " Reviews";
                             txtAddress.setText(place.getAddress());
                             txtReview.setText(vcount);
-                            txtDes.setText(Html.fromHtml(place.getLongDes()));
 
-                            Log.i("html: ", place.getLongDes());
-
+                            PicassoImageGetter imageGetter = new PicassoImageGetter(txtDes, getApplicationContext());
+                            Spannable html;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                html = (Spannable) Html.fromHtml(place.getLongDes(), Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
+                            } else {
+                                html = (Spannable) Html.fromHtml(place.getLongDes(), imageGetter, null);
+                            }
+                            txtDes.setText(html);
 
                             //set location of place
                             LatLng loc = new LatLng(place.getLatitude(), place.getLongitude());
-                            mMap.addMarker(new MarkerOptions().position(loc).title(place.getName()));
+                            mMap.addMarker(new MarkerOptions().position(loc).title(place.getName())).showInfoWindow();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
 
                         } catch (JSONException e) {
+//                            System.out.println("Error: " + e.toString());
                             new DialogInfo(context, "Không thể lấy dữ liệu từ Server!!!").show();
                         }
 

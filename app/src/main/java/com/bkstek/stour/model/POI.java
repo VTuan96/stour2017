@@ -7,8 +7,43 @@ package com.bkstek.stour.model;
 public class POI {
     int Id;
     String Name;
-    String Latitude;
     String Image;
+    double Latitude;
+    double Longitude;
+    String VideoDir;
+    String Audio;
+
+    public String getVideoDir() {
+        return VideoDir;
+    }
+
+    public void setVideoDir(String videoDir) {
+        VideoDir = videoDir;
+    }
+
+    public String getAudio() {
+        return Audio;
+    }
+
+    public void setAudio(String audio) {
+        Audio = audio;
+    }
+
+    public double getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(double lattitude) {
+        Latitude = lattitude;
+    }
+
+    public double getLongitude() {
+        return Longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        Longitude = longitude;
+    }
 
     public String getImage() {
         return Image;
@@ -44,21 +79,5 @@ public class POI {
         Name = name;
     }
 
-    public String getLatitude() {
-        return Latitude;
-    }
 
-    public void setLatitude(String latitude) {
-        Latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return Longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        Longitude = longitude;
-    }
-
-    String Longitude;
 }

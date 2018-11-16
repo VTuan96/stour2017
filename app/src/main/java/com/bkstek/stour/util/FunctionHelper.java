@@ -3,6 +3,7 @@ package com.bkstek.stour.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
@@ -15,8 +16,10 @@ public class FunctionHelper {
 
     ///check internet
     public static boolean isNetworkConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public static void UpdateTabClick(Context context, String tabName) {
@@ -31,6 +34,5 @@ public class FunctionHelper {
         String tabName = preferences.getString("tab", "");
         return tabName;
     }
-
 
 }

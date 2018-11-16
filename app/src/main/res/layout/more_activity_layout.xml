@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="#7a7cff"
+            android:background="@color/background_map"
             android:text="Đăng ký / Đăng nhập"
             android:textColor="@color/white"
             android:textSize="15sp"/>
@@ -50,7 +50,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#7a7cff"
+            android:background="@color/background_map"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Tài khoản"
@@ -59,7 +59,7 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cvWeather"
+        android:id="@+id/cvUtilities"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/border_conner_image"
@@ -71,8 +71,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="#7a7cff"
-            android:text="Thời tiết"
+            android:background="@color/background_map"
+            android:text="Tiện ích"
             android:textColor="@color/white"
             android:textSize="15sp"/>
     </android.support.v7.widget.CardView>
@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#7a7cff"
+            android:background="@color/background_map"
             android:gravity="center"
             android:text="Cài Đặt"
             android:textColor="@color/white"

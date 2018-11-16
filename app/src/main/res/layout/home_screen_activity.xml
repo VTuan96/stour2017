@@ -33,7 +33,7 @@
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:paddingTop="5dp"
-            android:weightSum="4">
+            android:weightSum="3">
 
             <RelativeLayout
                 android:id="@+id/tab_home"
@@ -61,32 +61,32 @@
                     android:textSize="@dimen/bot_menu_text" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/tab_datcho"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingTop="@dimen/bot_menu_padding">
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/tab_datcho"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:paddingTop="@dimen/bot_menu_padding">-->
 
-                <ImageView
-                    android:id="@+id/iv_menu_datcho"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_map"
-                    android:tint="@color/menu_disable" />
+                <!--<ImageView-->
+                    <!--android:id="@+id/iv_menu_datcho"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:contentDescription="@string/app_name"-->
+                    <!--android:src="@drawable/ic_map"-->
+                    <!--android:tint="@color/menu_disable" />-->
 
-                <TextView
-                    android:id="@+id/tv_menu_datcho"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/iv_menu_datcho"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/bot_menu_padding"
-                    android:text="@string/datcho"
-                    android:textColor="@color/menu_disable"
-                    android:textSize="@dimen/bot_menu_text" />
-            </RelativeLayout>
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_menu_datcho"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@id/iv_menu_datcho"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="@dimen/bot_menu_padding"-->
+                    <!--android:text="@string/datcho"-->
+                    <!--android:textColor="@color/menu_disable"-->
+                    <!--android:textSize="@dimen/bot_menu_text" />-->
+            <!--</RelativeLayout>-->
 
             <RelativeLayout
                 android:id="@+id/tab_info"

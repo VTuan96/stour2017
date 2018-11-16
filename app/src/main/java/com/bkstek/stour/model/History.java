@@ -7,6 +7,8 @@ package com.bkstek.stour.model;
 public class History {
     int Id, Star, ViewCount;
     String Avatar;
+    String Name;
+    String Address;
 
     public int getId() {
         return Id;
@@ -56,6 +58,5 @@ public class History {
         Address = address;
     }
 
-    String Name;
-    String Address;
+
 }
