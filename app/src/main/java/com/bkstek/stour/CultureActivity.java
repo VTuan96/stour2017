@@ -9,8 +9,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bkstek.stour.adapter.AdapterCulture;
+import com.bkstek.stour.adapter.AdapterHistory;
 import com.bkstek.stour.component.DialogInfo;
 import com.bkstek.stour.model.History;
 import com.bkstek.stour.util.FunctionHelper;
@@ -48,9 +51,11 @@ public class CultureActivity extends AppCompatActivity {
     RecyclerView recyclerList;
     ImageView imBack;
     Context context;
-    List<History> historyList;
     AdapterCulture adapterCulture;
 
+    List<History> historyList = new ArrayList<>();
+    List<History> historyListTemp = new ArrayList<>();
+    SearchView svCuture;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,12 +64,26 @@ public class CultureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_culture_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerList = (RecyclerView) findViewById(R.id.recyclerList);
-        imBack = (ImageView) findViewById(R.id.imBack);
+//        imBack = (ImageView) findViewById(R.id.imBack);
         recyclerList.setNestedScrollingEnabled(false);
         context = CultureActivity.this;
 
-        toolbar.setTitle("");
+        toolbar.setTitle("Văn hóa lễ hội");
         setSupportActionBar(toolbar);
+
+        svCuture = findViewById(R.id.svCulture);
+        svCuture.setLayoutParams(new Toolbar.LayoutParams(Gravity.RIGHT));
+
+        toolbar.setNavigationIcon(R.drawable.back2);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iBack = new Intent(context, HomeScreenActivity.class);
+                startActivity(iBack);
+                finish();
+            }
+        });
 
         if (FunctionHelper.isNetworkConnected(context)) {
             GetData();
@@ -72,15 +91,36 @@ public class CultureActivity extends AppCompatActivity {
 //            new DialogInfo(context, "Không có kết nối internet!!!").show();
         }
 
-
-        imBack.setOnClickListener(new View.OnClickListener() {
+        svCuture.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View view) {
-                Intent iBack = new Intent(context, HomeScreenActivity.class);
-                startActivity(iBack);
-                finish();
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (s.length() != 0) {
+                    historyListTemp = new ArrayList<>();
+                    for (History his : historyList) {
+                        if (his.getName().toLowerCase().contains(s.toLowerCase())) {
+                            historyListTemp.add(his);
+                        }
+                    }
+
+                    recyclerList.removeAllViews();
+                    adapterCulture = new AdapterCulture(context, historyListTemp);
+                    recyclerList.setAdapter(adapterCulture);
+                    adapterCulture.notifyDataSetChanged();
+                } else {
+                    recyclerList.removeAllViews();
+                    adapterCulture = new AdapterCulture(context, historyList);
+                    recyclerList.setAdapter(adapterCulture);
+                    adapterCulture.notifyDataSetChanged();
+                }
+                return false;
             }
         });
+
 
     }
 
@@ -142,14 +182,14 @@ public class CultureActivity extends AppCompatActivity {
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        return super.onOptionsItemSelected(item);
+//    }
 }

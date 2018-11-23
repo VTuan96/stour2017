@@ -83,16 +83,6 @@ public class AdapterHistory extends RecyclerView.Adapter<AdapterHistory.ViewHold
             holder.txtAddress.setText(history.getAddress().substring(0,40) + "...");
         else holder.txtAddress.setText(history.getAddress());
 
-//        holder.imHis.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent iDetail = new Intent(context, DetailActivity.class);
-//                iDetail.putExtra("PlaceID", history.getId());
-//                iDetail.putExtra("TAG", "HIS");
-//                context.startActivity(iDetail);
-//            }
-//        });
-
         holder.cvContain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,0 +1,42 @@
+[
+    {
+        "name": "SHB Tuyen Quang",
+        "address": "138, Nguyễn Trãi, P. Tân Quang, Tuyên Quang",
+        "lat": "21.813815",
+        "lon": "105.213704",
+        "tel": "0207 3827 555",
+        "open_time" : "7h30-12h và 1h30-17h"
+    },
+    {
+        "name": "Liên Việt Post Bank  ",
+        "address": "Toà Nhà Viettel Tuyên Quang, 172, Tổ 26, Đường Bình Thuận, Phường Tân Quang, Thành Phố Tuyên Quang",
+        "lat": "21.813547",
+        "lon": "105.211646",
+        "tel": "0207 6269 966",
+        "open_time" : "8h-17h"
+    },
+    {
+        "name": "Ngân hàng TMCP Quân Đội",
+        "address": "Số 155, đường tổ 19, p. Tp., Bình Thuận, P. Tân Quang, Tuyên Quang",
+        "lat": "21.813558",
+        "lon": "105.212127",
+        "tel": "0207 6265 555",
+        "open_time" : "7h30-17h30"
+    },
+    {
+        "name": "Vietcombank  ",
+        "address": "Tổ 25, Phường Tân Quang, P. Tân Quang, Tuyên Quang",
+        "lat": "21.815223",
+        "lon": "105.212479",
+        "tel": "0207 3820 886",
+        "open_time" : "8h-16h30"
+    },
+    {
+        "name": "Ngân Hàng BIDV",
+        "address": "Số 374, Tổ 7, Đường 17-8, Phan Thiết, Tuyên Quang",
+        "lat": "21.824655",
+        "lon": "105.204692",
+        "tel": "0207 3822 453",
+        "open_time" : "8h-11h30 và 1h-16h30"
+    }
+]

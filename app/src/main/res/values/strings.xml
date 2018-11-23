@@ -3,7 +3,7 @@
     <string name="home">Trang chủ</string>
     <string name="datcho">Bản đồ</string>
     <string name="info">Thông báo</string>
-    <string name="account">Tài khoản</string>
+    <string name="account">...</string>
     <string name="more">Thêm</string>
 
     <string name="back"> Quay lại</string>
@@ -30,7 +30,7 @@
 
     <string name="funct3">Di tích lịch sử</string>
 
-    <string name="funct4">Lễ hội văn hóa</string>
+    <string name="funct4">Văn hóa lễ hội</string>
 
     <string name="funct5">Văn hóa ẩm thực</string>
     <string name="great">Wonderful!</string>
@@ -146,6 +146,10 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="backSymbol"><![CDATA[<]]></string>
+    <string name="temp">Nhiệt độ (<sup>o</sup>C)</string>
+    <string name="humi">Độ ẩm (%)</string>
+    <string name="weather">Thời tiết</string>
 
     <!--<string name="facebook_app_id">2162649873978145</string>-->
     <!--<string name="fb_login_protocol_scheme">fb2162649873978145</string>-->

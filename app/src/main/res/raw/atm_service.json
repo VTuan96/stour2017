@@ -1,0 +1,38 @@
+[
+    {
+        "name": "ATM BIDV ",
+        "address": "4 Bình Thuận, P. Tân Quang, Tp. Tuyên Quang, Tuyên Quang",
+        "lat": "21.820826",
+        "lon": "105.215715"
+    },
+    {
+        "name": "ATM VIETINBANK ",
+        "address": "182 Nguyễn Văn Cừ, P. Minh Xuân, Tp. Tuyên Quang, Tuyên Quang",
+        "lat": "21.819789",
+        "lon": "105.219188"
+    },
+    {
+        "name": "ATM Agribank",
+        "address": "64 Chiến Thắng Sông Lô, P. Tân Quang, Tuyên Quang, Vietnam",
+        "lat": "21.815597",
+        "lon": "105.216273"
+    },
+    {
+        "name": "ATM Agribank ",
+        "address": "112, Nguyễn Văn Cừ, P. Minh Xuân, Tuyên Quang",
+        "lat": "21.822539",
+        "lon": "105.221444"
+    },
+    {
+        "name": "ATM Agribank",
+        "address": "Phường Phan Thiết, Thị Xã Tuyên Quang, P. Phan Thiết, Tuyên Quang",
+        "lat": "21.824890",
+        "lon": "105.204058"
+    },
+    {
+        "name": "ATM Agribank ",
+        "address": "Tổ Trung Tâm 1, Thị trấn Vĩnh Lộc, Huyện Chiêm Hóa, Tỉnh Tuyên Quang",
+        "lat": "22.153860",
+        "lon": "105.281319"
+    }
+]

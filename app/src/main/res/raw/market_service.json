@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Vincom Plaza Tuyên Quang",
+        "address": "260 Quang Trung, P. Phan Thiết, Tuyên Quang",
+        "lat": "21.818934",
+        "lon": "105.205245"
+    },
+    {
+        "name": "Muong Thanh Tuyen Quang Supermarket",
+        "address": "P. Tân Quang, Tuyên Quang",
+        "lat": "21.814996",
+        "lon": "105.215919"
+    },
+    {
+        "name": "Siêu thị Mini",
+        "address": "Quang Trung, P. Tân Quang, Tuyên Quang",
+        "lat": "21.816139",
+        "lon": "105.211616"
+    },
+    {
+        "name": "Siêu thị chợ xoan",
+        "address": "Thượng ấm, Sơn Dương District, Tuyên Quang",
+        "lat": "21.751320",
+        "lon": "105.309058"
+    }
+]

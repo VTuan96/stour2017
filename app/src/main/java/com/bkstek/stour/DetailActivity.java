@@ -134,8 +134,8 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
         pgFour = (ProgressBar) findViewById(R.id.pgFour);
         pgFive = (ProgressBar) findViewById(R.id.pgFive);
 
-        youtube = (RelativeLayout) findViewById(R.id.youtube);
-        txtLink = (TextView) findViewById(R.id.txtLink);
+//        youtube = (RelativeLayout) findViewById(R.id.youtube);
+//        txtLink = (TextView) findViewById(R.id.txtLink);
 
         pgOne.setIndeterminate(false);
         pgOne.setMax(100);
@@ -177,17 +177,17 @@ public class DetailActivity extends AppCompatActivity implements ViewPager.OnPag
 
 //        GetData(locationID);
 
-        youtube.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent iYoutube = new Intent(context, YoutubeActivity.class);
-                iYoutube.putExtra("VIDEO_ID", video_id);
-                iYoutube.putExtra("locationID", locationID);
-                iYoutube.putExtra("TAG", TAG);
-                iYoutube.putExtra(CommonDefine.TITLE, title);
-                startActivity(iYoutube);
-            }
-        });
+//        youtube.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent iYoutube = new Intent(context, YoutubeActivity.class);
+//                iYoutube.putExtra("VIDEO_ID", video_id);
+//                iYoutube.putExtra("locationID", locationID);
+//                iYoutube.putExtra("TAG", TAG);
+//                iYoutube.putExtra(CommonDefine.TITLE, title);
+//                startActivity(iYoutube);
+//            }
+//        });
 
         imBack.setOnClickListener(new View.OnClickListener() {
             @Override

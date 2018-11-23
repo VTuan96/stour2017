@@ -9,12 +9,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.bkstek.stour.component.DialogUltilities;
 
 /**
  * Created by thold on 8/1/2017.
@@ -57,9 +60,12 @@ public class MoreActivity extends AppCompatActivity {
         cvUtilities.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(MoreActivity.this, WeatherActivity.class);
-//                startActivity(intent);
-                showAlertDialog("Chức năng đang phát triển!");
+//                Intent intent = new Intent(MoreActivity.this, Di.class);
+////                startActivity(intent);
+                DialogUltilities ultilities = new DialogUltilities(context);
+                ultilities.show();
+
+//                showAlertDialog("Chức năng đang phát triển!");
 
             }
         });
@@ -74,7 +80,7 @@ public class MoreActivity extends AppCompatActivity {
     }
 
     private void showAlertDialog(String message){
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.Theme_AppCompat_Dialog_Alert)).create();
         alertDialog.setTitle("Thông báo");
         alertDialog.setMessage(message);
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",

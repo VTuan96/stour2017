@@ -1,7 +1,9 @@
 package com.bkstek.stour;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,13 +13,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +42,7 @@ import com.bkstek.stour.adapter.AdapterHotel;
 import com.bkstek.stour.adapter.AdapterRestaurant;
 import com.bkstek.stour.adapter.AdapterSlider;
 import com.bkstek.stour.component.DialogInfo;
+import com.bkstek.stour.component.DialogSelectCategory;
 import com.bkstek.stour.fragment.FragmentSlider;
 import com.bkstek.stour.model.Banner;
 import com.bkstek.stour.model.Category;
@@ -87,6 +93,10 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
     AdapterRestaurant adapterRestaurant;
     private SliderLayout sldHome;
 
+    //region search poi
+    SearchView svPOI;
+    int selection = -1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +104,8 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
         setContentView(R.layout.home_activity_layout);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        svPOI = (SearchView) findViewById(R.id.svPOI);
+//        svPOI.setLayoutParams(new Toolbar.LayoutParams(Gravity.RIGHT));
 
 //        vpSlides = (ViewPager) findViewById(R.id.vpSlides);
         sldHome = findViewById(R.id.sldHome);
@@ -171,6 +183,9 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
                 startActivity(iHotel);
             }
         });
+
+
+
     }
 
     @Override
@@ -189,6 +204,7 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
             }
         });
     }
+
 
     //region get all category
     private void GetAllCategory() {
@@ -437,12 +453,23 @@ public class HomeActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.mnu_search){
+            final DialogSelectCategory selectCategory = new DialogSelectCategory(context,selection);
+            selectCategory.show();
+
+            selectCategory.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    selection = selectCategory.getSelection();
+                }
+            });
+        }
         return super.onOptionsItemSelected(item);
     }
 

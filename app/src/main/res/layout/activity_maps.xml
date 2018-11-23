@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/lnContainMap">
 
 
         <LinearLayout
@@ -128,6 +129,7 @@
                             android:id="@+id/edFrom"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
+                            android:focusableInTouchMode= "false"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="5dp"
                             android:layout_marginRight="5dp"
@@ -157,6 +159,7 @@
                             android:id="@+id/edTo"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
+                            android:focusableInTouchMode= "false"
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="5dp"
                             android:layout_marginRight="5dp"
@@ -252,7 +255,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:foregroundGravity="center"
-                        android:src="@drawable/bycycle_1" />
+                        android:src="@drawable/ic_motorcycle_white_24dp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -319,7 +322,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:foregroundGravity="center"
-                        android:src="@drawable/bycycle_1" />
+                        android:src="@drawable/ic_motorcycle_white_24dp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -355,37 +358,65 @@
 
     </LinearLayout>
 
-    <!--<android.support.v7.widget.CardView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:layout_margin = "@dimen/size5dp"-->
-        <!--android:layout_gravity="bottom"-->
-        <!--android:id="@+id/cvInfoDes">-->
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Thu Vien Ta Quang Buu"-->
-                <!--android:id="@+id/txtTitleDes"-->
-                <!--android:textStyle="bold"-->
-                <!--android:padding="10dp"/>-->
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/txtDistanceDes"-->
-                <!--android:text="4km"-->
-                <!--android:layout_marginLeft="10dp"/>-->
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/txtDurationDes"-->
-                <!--android:text="20 phut"-->
-                <!--android:layout_marginLeft="10dp"/>-->
-        <!--</LinearLayout>-->
-    <!--</android.support.v7.widget.CardView>-->
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin = "@dimen/size5dp"
+        android:id="@+id/cvInforDes"
+        android:layout_gravity="bottom"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/txtHideInfoDes"
+                android:text="@string/backSymbol"
+                android:textSize="50sp"
+                android:layout_marginLeft="@dimen/size5dp"
+                android:layout_marginRight="@dimen/size3dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:id="@+id/lnInforDes">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/txtTitleOri"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/txtTitleDes"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtDistanceDes"
+                    android:text=""
+                    android:layout_marginLeft="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtDurationDes"
+                    android:text=""
+                    android:layout_marginLeft="10dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </FrameLayout>
 

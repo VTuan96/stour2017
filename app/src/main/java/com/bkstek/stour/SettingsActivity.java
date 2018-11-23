@@ -43,6 +43,8 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.commit();
 
                     Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Thông tin các trường nhập chưa hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
 
             }

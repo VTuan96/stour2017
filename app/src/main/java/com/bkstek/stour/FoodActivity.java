@@ -9,8 +9,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bkstek.stour.adapter.AdapterFood;
+import com.bkstek.stour.adapter.AdapterHistory;
 import com.bkstek.stour.component.DialogInfo;
 import com.bkstek.stour.model.History;
 import com.bkstek.stour.util.FunctionHelper;
@@ -46,9 +49,12 @@ public class FoodActivity extends AppCompatActivity {
     Toolbar toolbar;
     RecyclerView recyclerList;
     Context context;
-    List<History> historyList;
     AdapterFood adapterFood;
     ImageView imBack;
+
+    List<History> historyList = new ArrayList<>();
+    List<History> historyListTemp = new ArrayList<>();
+    SearchView svFood;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,12 +63,25 @@ public class FoodActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerList = (RecyclerView) findViewById(R.id.recyclerList);
-        imBack = (ImageView) findViewById(R.id.imBack);
+//        imBack = (ImageView) findViewById(R.id.imBack);
         context = FoodActivity.this;
         recyclerList.setNestedScrollingEnabled(false);
 
-        toolbar.setTitle("");
+        toolbar.setTitle("Văn hóa ẩm thực");
         setSupportActionBar(toolbar);
+
+        svFood = findViewById(R.id.svFood);
+        svFood.setLayoutParams(new Toolbar.LayoutParams(Gravity.RIGHT));
+        toolbar.setNavigationIcon(R.drawable.back2);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iBack = new Intent(context, HomeScreenActivity.class);
+                startActivity(iBack);
+                finish();
+            }
+        });
 
         if (FunctionHelper.isNetworkConnected(context)) {
             GetData();
@@ -71,12 +90,33 @@ public class FoodActivity extends AppCompatActivity {
         }
 
 
-        imBack.setOnClickListener(new View.OnClickListener() {
+        svFood.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View view) {
-                Intent iBack = new Intent(context, HomeScreenActivity.class);
-                startActivity(iBack);
-                finish();
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (s.length() != 0) {
+                    historyListTemp = new ArrayList<>();
+                    for (History his : historyList) {
+                        if (his.getName().toLowerCase().contains(s.toLowerCase())) {
+                            historyListTemp.add(his);
+                        }
+                    }
+
+                    recyclerList.removeAllViews();
+                    adapterFood = new AdapterFood(context, historyListTemp);
+                    recyclerList.setAdapter(adapterFood);
+                    adapterFood.notifyDataSetChanged();
+                } else {
+                    recyclerList.removeAllViews();
+                    adapterFood = new AdapterFood(context, historyList);
+                    recyclerList.setAdapter(adapterFood);
+                    adapterFood.notifyDataSetChanged();
+                }
+                return false;
             }
         });
     }
@@ -142,14 +182,14 @@ public class FoodActivity extends AppCompatActivity {
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        return super.onOptionsItemSelected(item);
+//    }
 }

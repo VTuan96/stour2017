@@ -39,11 +39,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
-                android:layout_marginTop="5dp"
+                android:padding="15dp"
                 android:gravity="center_horizontal"
-                android:background="@color/white"
+                android:background="@color/background_map"
                 android:text="@string/account"
-                android:textColor="@color/background_map"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -171,6 +171,7 @@
                     android:id="@+id/rbStarRateNoneService"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:progressBackgroundTint="@color/background_main"
                     android:layout_below="@+id/ratetextNoneService"
                     android:layout_centerHorizontal="true"
                     android:numStars="5"

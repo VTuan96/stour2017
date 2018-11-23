@@ -18,10 +18,18 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Weather"
+            app:title="@string/weather"
             app:titleTextColor="@color/white"/>
 
     </android.support.design.widget.AppBarLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="Thông tin thời tiết tỉnh Tuyên Quang"/>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -38,7 +46,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Nhiệt độ"
+                android:text="@string/temp"
                 android:layout_marginLeft="5dp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
@@ -47,7 +55,7 @@
                 android:id="@+id/txtTemp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="0"
+                android:text="..."
                 android:textSize="15sp"
                 android:gravity="center"
                 android:layout_weight="1"/>
@@ -70,7 +78,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Độ ẩm"
+                android:text="@string/humi"
                 android:textSize="15sp"
                 android:layout_marginLeft="5dp"
                 android:gravity="center_vertical"
@@ -79,7 +87,7 @@
                 android:id="@+id/txtHumi"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="0"
+                android:text="..."
                 android:textSize="15sp"
                 android:gravity="center"
                 android:layout_weight="1"/>

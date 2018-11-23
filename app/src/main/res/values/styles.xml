@@ -6,10 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionBarWidgetTheme">@style/MyActionBarWidgetTheme</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <item name="android:statusBarColor">@color/splashbackgroudcolor</item>
     </style>
 
     // custom style here
+
+    <style name="MyActionBarWidgetTheme" parent="@android:style/Theme.Holo">
+        <item name="android:textColorHint">@color/white</item>
+    </style>
 
     <style name="SplashStyle" parent="Theme.AppCompat.NoActionBar">
         <item name="android:statusBarColor">@color/splashbackgroudcolor</item>
@@ -35,6 +42,37 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:background">@color/splashbackgroudcolor</item>
         <item name="android:layout_margin">10dp</item>
+    </style>
+
+    //style of searchview
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Gets rid of the search icon -->
+        <!-- Gets rid of the "underline" in the text -->
+        <item name="queryBackground">@color/white</item>
+        <item name="android:layout_margin">5dp</item>
+        <!-- Gets rid of the search icon when the SearchView is expanded -->
+        <item name="searchHintIcon">@null</item>
+        <!-- The hint text that appears when the user has not typed anything -->
+
+    </style>
+
+    //style of toolbar
+    <style name="AppTheme.MyToolbarStyle">
+        <!--This line changes the color of text in Toolbar-->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+    </style>
+
+
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/white</item>
     </style>
 
 </resources>

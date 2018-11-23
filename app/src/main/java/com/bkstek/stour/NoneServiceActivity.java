@@ -119,6 +119,7 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
     MediaPlayer playerAudio;
     String AudioUrl = "";
     private int REQUEST_PHONE_CALL = 124; //request call phone of none service
+    String FUNC = CommonDefine.ROUTING;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -191,6 +192,7 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
         Intent intent = getIntent();
         locationID = intent.getIntExtra("PlaceID", 0);
         TAG = intent.getStringExtra("TAG");
+        FUNC = intent.getStringExtra(CommonDefine.FUNC);
 
         VideoDir = intent.getStringExtra(CommonDefine.VIDEO_DIR);
 
@@ -296,7 +298,14 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
             startActivity(iBack);
         } else if (TAG.equals("HIS")) {
             Intent iBack = new Intent(context, HistoryActivity.class);
+            FUNC = getIntent().getStringExtra(CommonDefine.FUNC);
+            if (FUNC!=null && FUNC.equals(CommonDefine.SMART)) {
+                iBack = new Intent(context, MapsActivity.class);
+                iBack.putExtra(CommonDefine.FUNC, CommonDefine.SMART);
+            }
+
             startActivity(iBack);
+
         } else if (TAG.equals("CUL")) {
             Intent iBack = new Intent(context, CultureActivity.class);
             startActivity(iBack);
@@ -407,7 +416,7 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
 
                             SetBanner(bannerList);
 
-                            txtPlaceName.setText(place.getName());
+                            txtPlaceName.setText(place.getName().trim());
 //                            rbStarRate.setNumStars(place.getStar());
 
                             String vcount = String.valueOf(place.getViewCount()) + " Reviews";

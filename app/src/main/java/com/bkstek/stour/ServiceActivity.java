@@ -134,8 +134,8 @@ public class ServiceActivity extends AppCompatActivity implements ViewPager.OnPa
         pgFour = (ProgressBar) findViewById(R.id.pgFour);
         pgFive = (ProgressBar) findViewById(R.id.pgFive);
 
-        youtube = (RelativeLayout) findViewById(R.id.youtube);
-        txtLink = (TextView) findViewById(R.id.txtLink);
+//        youtube = (RelativeLayout) findViewById(R.id.youtube);
+//        txtLink = (TextView) findViewById(R.id.txtLink);
 
         sliderLayout = findViewById(R.id.imageSlider);
         sliderLayout.setIndicatorAnimation(SliderLayout.Animations.FILL); //set indicator animation by using SliderLayout.Animations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
@@ -179,27 +179,27 @@ public class ServiceActivity extends AppCompatActivity implements ViewPager.OnPa
 
 //        GetData(locationID);
 
-        youtube.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Intent iYoutube = new Intent(context, YoutubeActivity.class);
-//                iYoutube.putExtra("VIDEO_ID", video_id);
-//                iYoutube.putExtra("locationID", locationID);
-//                iYoutube.putExtra("TAG", TAG);
-//                startActivity(iYoutube);
-
-                new AlertDialog.Builder(context)
-                        .setTitle("Thông báo")
-                        .setMessage("Chưa có video về địa điểm này!")
-                        .setCancelable(false)
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-            }
-        });
+//        youtube.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                Intent iYoutube = new Intent(context, YoutubeActivity.class);
+////                iYoutube.putExtra("VIDEO_ID", video_id);
+////                iYoutube.putExtra("locationID", locationID);
+////                iYoutube.putExtra("TAG", TAG);
+////                startActivity(iYoutube);
+//
+//                new AlertDialog.Builder(context)
+//                        .setTitle("Thông báo")
+//                        .setMessage("Chưa có video về địa điểm này!")
+//                        .setCancelable(false)
+//                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                            }
+//                        }).show();
+//            }
+//        });
 
         imBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,7 +212,6 @@ public class ServiceActivity extends AppCompatActivity implements ViewPager.OnPa
         imPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Phone : " + txtPhone.getText(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+" + txtPhone.getText()));
                 // Here, thisActivity is the current activity
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -334,7 +333,7 @@ public class ServiceActivity extends AppCompatActivity implements ViewPager.OnPa
 
                             SetBanner(bannerList);
 
-                            txtPlaceName.setText(place.getName());
+                            txtPlaceName.setText(place.getName().trim());
                             rbStarRate.setNumStars(place.getStar());
 
                             String vcount = String.valueOf(place.getViewCount()) + " Reviews";

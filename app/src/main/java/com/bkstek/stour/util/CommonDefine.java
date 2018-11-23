@@ -80,7 +80,7 @@ public interface CommonDefine {
     public static final String GET_RESTAURANT_DETAIL = DOMAIN_STOUR + "mobile/restaurant/detail";
 
     //get pois for map
-    public static final String GET_POIS = DOMAIN_STOUR + "api/poi/GetPOIs";
+    public static final String GET_POIS = DOMAIN_STOUR + "mobile/poi/getall";
 
 
     public static final String GEOSERVER_FORMAT =
@@ -108,6 +108,7 @@ public interface CommonDefine {
      ----------------       API Open Weather ---------------------
      */
     public static final String URL_OPEN_WEATHER = "http://api.openweathermap.org/data/2.5/weather?";
+//    public static final String URL_OPEN_WEATHER = "http://api.openweathermap.org/data/2.5/forecast?";
     public static final String API_KEY_OPEN_WEATHER = "4d2a8ab0ce16ba243d26a225856a7f92";
 
 
@@ -121,4 +122,11 @@ public interface CommonDefine {
     public static final String SETTING = "SETTING";
     public static final String TIME_UPDATE_LOCATION = "TIME_UPDATE_LOCATION";
     public static final String RADIUS_ACCESS = "RADIUS_ACCESS";
+
+    public static final String SELECTION_SEARCH = "SELECTION_SEARCH";
+    public static final String SELECTION_ULTILITIES = "SELECTION_ULTILITIES";
+    public static final String ATM = "ATM";
+    public static final String BANK = "BANK";
+    public static final String MART = "MART";
+    public static final String LBS = "LBS";
 }

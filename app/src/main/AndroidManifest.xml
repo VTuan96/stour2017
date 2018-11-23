@@ -109,7 +109,11 @@
 
         <activity android:name=".ServiceActivity" />
         <activity android:name=".NoneServiceActivity" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".HotelActivity" />
+        <activity android:name=".RestaurantActivity" />
+        <activity android:name=".LBSActivity"></activity>
     </application>
 
 </manifest>

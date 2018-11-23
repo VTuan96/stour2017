@@ -19,22 +19,14 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            style="@style/AppTheme.MyToolbarStyle">
 
-            <ImageView
-                android:id="@+id/imBack"
+            <android.support.v7.widget.SearchView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/back2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
-                android:text="@string/ditich"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
+                style="@style/AppTheme"
+                android:id="@+id/svHistory"></android.support.v7.widget.SearchView>
 
         </android.support.v7.widget.Toolbar>
 

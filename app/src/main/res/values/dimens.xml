@@ -10,4 +10,5 @@
     <dimen name="size5dp">5dp</dimen>
     <dimen name="size8dp">8dp</dimen>
     <dimen name="size10dp">10dp</dimen>
+    <dimen name="size3dp">3dp</dimen>
 </resources>

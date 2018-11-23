@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by duy tho le on 10/2/2017.
@@ -66,6 +67,7 @@ public class DialogDestination extends Dialog {
             Toast.makeText(context, "Bạn chưa chọn điểm đến", Toast.LENGTH_LONG).show();
         } else {
             dismiss();
+            MapsActivity.listPOIs = tempList;
             for (int i = 1; i < count; i++) {
 //                MapsActivity.getLocationForMultiDirection(latLngList.get(0), latLngList.get(i), CommonDefine.MODE_DRIVING);
                 MapsActivity.getLocationForMultiDirectionPOI(tempList.get(0), tempList.get(i), CommonDefine.MODE_DRIVING);
@@ -80,5 +82,9 @@ public class DialogDestination extends Dialog {
 //        recyclerPois.setLayoutManager(layoutManager);
         recyclerPois.setAdapter(adapterDestination);
         adapterDestination.notifyDataSetChanged();
+    }
+
+    private List<POI> getListPOI(){
+        return tempList;
     }
 }

@@ -64,6 +64,9 @@ public class YoutubeActivity extends YouTubeBaseActivity implements YouTubePlaye
                 } else if (TAG.equals(CommonDefine.SMART)){
                     iYoutube = new Intent(context, MapsActivity.class);
                     iYoutube.putExtra(CommonDefine.FUNC, CommonDefine.SMART);
+                } else if (TAG.equals(CommonDefine.ROUTING)){
+                    iYoutube = new Intent(context, MapsActivity.class);
+                    iYoutube.putExtra(CommonDefine.FUNC, CommonDefine.ROUTING);
                 }
 
                 iYoutube.putExtra("PlaceID", locationID);

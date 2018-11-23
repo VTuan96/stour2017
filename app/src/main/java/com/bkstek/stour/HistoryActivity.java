@@ -11,12 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -50,7 +53,10 @@ public class HistoryActivity extends AppCompatActivity {
     Context context;
     AdapterHistory adapterHistory;
     List<History> historyList = new ArrayList<>();
+    List<History> historyListTemp = new ArrayList<>();
     ImageView imBack;
+
+    SearchView svHistory;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +65,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerList = (RecyclerView) findViewById(R.id.recyclerList);
-        imBack = (ImageView) findViewById(R.id.imBack);
+//        imBack = (ImageView) findViewById(R.id.imBack);
         recyclerList.setNestedScrollingEnabled(false);
         context = HistoryActivity.this;
 
@@ -69,8 +75,22 @@ public class HistoryActivity extends AppCompatActivity {
         recyclerList.setAdapter(adapterHistory);
         adapterHistory.notifyDataSetChanged();
 
-        toolbar.setTitle("");
+        toolbar.setTitle("Di tích lịch sử");
         setSupportActionBar(toolbar);
+
+        toolbar.setNavigationIcon(R.drawable.back2);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent iBack = new Intent(context, HomeScreenActivity.class);
+                startActivity(iBack);
+                finish();
+            }
+        });
+
+        svHistory = findViewById(R.id.svHistory);
+        svHistory.setLayoutParams(new Toolbar.LayoutParams(Gravity.RIGHT));
 
         if (FunctionHelper.isNetworkConnected(context)) {
             GetData();
@@ -78,14 +98,33 @@ public class HistoryActivity extends AppCompatActivity {
 //            new DialogInfo(context, "Không có kết nối internet!!!").show();
         }
 
-
-
-        imBack.setOnClickListener(new View.OnClickListener() {
+        svHistory.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View view) {
-                Intent iBack = new Intent(context, HomeScreenActivity.class);
-                startActivity(iBack);
-                finish();
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (s.length() != 0) {
+                    historyListTemp = new ArrayList<>();
+                    for (History his : historyList) {
+                        if (his.getName().toLowerCase().contains(s.toLowerCase())) {
+                            historyListTemp.add(his);
+                        }
+                    }
+
+                    recyclerList.removeAllViews();
+                    adapterHistory = new AdapterHistory(context, historyListTemp);
+                    recyclerList.setAdapter(adapterHistory);
+                    adapterHistory.notifyDataSetChanged();
+                } else {
+                    recyclerList.removeAllViews();
+                    adapterHistory = new AdapterHistory(context, historyList);
+                    recyclerList.setAdapter(adapterHistory);
+                    adapterHistory.notifyDataSetChanged();
+                }
+                return false;
             }
         });
     }
@@ -118,14 +157,11 @@ public class HistoryActivity extends AppCompatActivity {
                                     history.setName(object.getString("Name"));
                                     history.setAddress(object.getString("Address"));
                                     history.setAvatar(object.getString("Avatar"));
-//                                history.setStar(object.getInt("Star"));
                                     history.setViewCount(object.getInt("ViewCount"));
                                     historyList.add(history);
                                 }
                             }
 
-//                            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 1);
-//                            recyclerList.setLayoutManager(layoutManager);
                             adapterHistory = new AdapterHistory(context, historyList);
                             recyclerList.setAdapter(adapterHistory);
                             adapterHistory.notifyDataSetChanged();
@@ -150,14 +186,4 @@ public class HistoryActivity extends AppCompatActivity {
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.tool_bar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 }

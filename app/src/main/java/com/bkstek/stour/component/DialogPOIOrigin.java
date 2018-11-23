@@ -73,12 +73,6 @@ public class DialogPOIOrigin extends Dialog {
             tvTitle.setText("Chọn điểm đi");
             GetPOIOrigin();
         }
-
-
-
-
-
-
     }
 
     private void GetPOIOrigin() {
