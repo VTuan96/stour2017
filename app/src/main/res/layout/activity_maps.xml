@@ -359,6 +359,7 @@
     </LinearLayout>
 
 
+    <!--Cardview show all infor about direction 2 point-->
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -377,6 +378,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/txtHideInfoDes"
                 android:text="@string/backSymbol"
+                android:gravity="center_vertical"
                 android:textSize="50sp"
                 android:layout_marginLeft="@dimen/size5dp"
                 android:layout_marginRight="@dimen/size3dp"/>
@@ -390,14 +392,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="Điểm đi: ..."
                     android:id="@+id/txtTitleOri"
                     android:textStyle="bold"
                     android:layout_marginLeft="10dp"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="Điểm đến: ..."
                     android:id="@+id/txtTitleDes"
                     android:textStyle="bold"
                     android:layout_marginLeft="10dp"/>
@@ -405,14 +407,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtDistanceDes"
-                    android:text=""
+                    android:text="... km"
                     android:layout_marginLeft="10dp"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtDurationDes"
-                    android:text=""
+                    android:text="... phút"
                     android:layout_marginLeft="10dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray"/>
+                <TextView
+                    android:id="@+id/txtTitleDirection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Các bước"
+                    android:padding="@dimen/size10dp"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:layout_marginBottom="@dimen/size3dp"/>
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/lvDetailTravel"
+                    android:divider="@null"></ListView>
             </LinearLayout>
         </LinearLayout>
 

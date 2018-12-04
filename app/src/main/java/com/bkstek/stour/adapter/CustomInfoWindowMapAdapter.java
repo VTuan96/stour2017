@@ -51,12 +51,13 @@ public class CustomInfoWindowMapAdapter implements GoogleMap.InfoWindowAdapter {
 
         POI poi = (POI) marker.getTag();
 
-        name.setText(poi.getName().trim());
-        address.setText(poi.getAddress().trim());
+        if (poi != null) {
+            name.setText(poi.getName().trim());
+            address.setText(poi.getAddress().trim());
 
-        Picasso.with(context).load(Uri.parse(poi.getImage())).centerCrop().resize(70, 70).into(image);
+            Picasso.with(context).load(Uri.parse(poi.getImage())).centerCrop().resize(70, 70).into(image);
 
-
+        }
         return view;
     }
 

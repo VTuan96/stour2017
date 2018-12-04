@@ -11,4 +11,6 @@
     <dimen name="size8dp">8dp</dimen>
     <dimen name="size10dp">10dp</dimen>
     <dimen name="size3dp">3dp</dimen>
+    <dimen name="size12dp">12dp</dimen>
+    <dimen name="size15dp">15dp</dimen>
 </resources>

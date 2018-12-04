@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.bkstek.stour.util.CommonDefine;
@@ -19,7 +22,14 @@ public class SettingsActivity extends AppCompatActivity {
     Button btnSave;
     SharedPreferences preferences;
 
+    //Mode travel settings
+    RadioButton rbWalking, rbDriving, rbBicycling;
+    RadioGroup rgModeTravel;
+
     String timeUpdateLocation = "", radiusAccess = "";
+    int modeTravel = 0;
+    String modeTravelStr = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +38,11 @@ public class SettingsActivity extends AppCompatActivity {
         edtRadiusAccess = findViewById(R.id.edtRadiusAccess);
         edtTimeUpdateLocation = findViewById(R.id.edtTimeUpdateLocation);
         btnSave = findViewById(R.id.btnSaveSetting);
+
+        rbWalking = findViewById(R.id.rbWalking);
+        rbBicycling = findViewById(R.id.rbBicycling);
+        rbDriving = findViewById(R.id.rbDriving);
+        rgModeTravel = findViewById(R.id.rgModeTravel);
 
         getDefaultPreferences();
 
@@ -39,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(CommonDefine.TIME_UPDATE_LOCATION, timeUpdateLocation);
                     editor.putString(CommonDefine.RADIUS_ACCESS, radiusAccess);
+                    editor.putString(CommonDefine.MODE_TRAVEL, modeTravelStr);
                     editor.apply();
                     editor.commit();
 
@@ -47,6 +63,19 @@ public class SettingsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Thông tin các trường nhập chưa hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        rgModeTravel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                modeTravel = group.getCheckedRadioButtonId();
+                if (modeTravel == R.id.rbWalking)
+                    modeTravelStr = CommonDefine.MODE_WALKING;
+                else if (modeTravel == R.id.rbBicycling)
+                    modeTravelStr = CommonDefine.MODE_BICYCLING;
+                else if (modeTravel == R.id.rbDriving)
+                    modeTravelStr = CommonDefine.MODE_DRIVING;
             }
         });
 
@@ -67,6 +96,14 @@ public class SettingsActivity extends AppCompatActivity {
         String radiusAccessPref = preferences.getString(CommonDefine.RADIUS_ACCESS, "1");
         edtTimeUpdateLocation.setText(timeUpdatePref);
         edtRadiusAccess.setText(radiusAccessPref);
+        modeTravelStr = preferences.getString(CommonDefine.MODE_TRAVEL, CommonDefine.MODE_DRIVING);
+        if (modeTravelStr.equals(CommonDefine.MODE_DRIVING))
+            modeTravel = R.id.rbDriving;
+        else if (modeTravelStr.equals(CommonDefine.MODE_BICYCLING))
+            modeTravel = R.id.rbBicycling;
+        else if (modeTravelStr.equals(CommonDefine.MODE_WALKING))
+            modeTravel = R.id.rbWalking;
+        rgModeTravel.check(modeTravel);
     }
 
 

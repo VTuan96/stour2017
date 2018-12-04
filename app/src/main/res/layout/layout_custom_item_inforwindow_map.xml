@@ -8,7 +8,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:id="@+id/imgItemInfoWindow"
-        android:src="@drawable/ic_app"
+        android:src="@drawable/ic_my_location_black_18dp"
         android:layout_margin="@dimen/size5dp"
         android:layout_gravity="center_vertical"/>
     <LinearLayout

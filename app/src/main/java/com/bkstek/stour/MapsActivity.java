@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,9 +44,11 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bkstek.stour.adapter.AdapterDetailDirection;
 import com.bkstek.stour.adapter.CustomInfoWindowMapAdapter;
 import com.bkstek.stour.component.DialogPOIOrigin;
 import com.bkstek.stour.mapdigital.TileProviderFactory;
+import com.bkstek.stour.model.DetailDirection;
 import com.bkstek.stour.model.POI;
 import com.bkstek.stour.util.CommonDefine;
 import com.bkstek.stour.util.DirectionsJSONParser;
@@ -73,6 +76,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
+import com.google.gson.JsonObject;
 import com.google.maps.android.data.geojson.GeoJsonLayer;
 
 import org.json.JSONArray;
@@ -167,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static CardView cvInfoDes;
     public static LinearLayout lnInfoDes;
     public static TextView txtHideInfoDes;
-    public static TextView txtTitleDes, txtDistanceDes, txtDurationDes, txtTitleOri;
+    public static TextView txtTitleDes, txtDistanceDes, txtDurationDes, txtTitleOri, txtTitleDirection;
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE_FROM = 1111;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE_TO = 2222;
@@ -176,6 +180,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LinearLayout lnContainMap;
 
     static boolean isShowCardViewDes = false;
+    TextView txtDetailDirection;
+    public static ListView lvDetailTravel;
+    public static ArrayList<DetailDirection> listDetailDirection;
+    public static AdapterDetailDirection adapterDetailDirection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +215,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         imBicycleMulti = (ImageView) findViewById(R.id.imBicycleMulti);
         imWalkMulti = (ImageView) findViewById(R.id.imWalkMulti);
         lnHeader = findViewById(R.id.lnHeader);
+//        txtDetailDirection = findViewById(R.id.txtDetailDirection);
+        lvDetailTravel = findViewById(R.id.lvDetailTravel);
 
         cvInfoDes = findViewById(R.id.cvInforDes);
         lnInfoDes = findViewById(R.id.lnInforDes);
@@ -215,6 +225,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         txtTitleOri = findViewById(R.id.txtTitleOri);
         txtDistanceDes = findViewById(R.id.txtDistanceDes);
         txtDurationDes = findViewById(R.id.txtDurationDes);
+        txtTitleDirection = findViewById(R.id.txtTitleDirection);
         lnContainMap = findViewById(R.id.lnContainMap);
 
         rlDown = (RelativeLayout) findViewById(R.id.rlDown);
@@ -358,6 +369,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         test_direction = readRawFiles(R.raw.test_direction);
+
+
+        /*
+         * setup data to list view direction travel
+        */
+        listDetailDirection = new ArrayList<>();
+        adapterDetailDirection = new AdapterDetailDirection(context, listDetailDirection);
+        lvDetailTravel.setAdapter(adapterDetailDirection);
     }
 
 
@@ -387,21 +406,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ClickModeCar("single");
                 Mode = CommonDefine.MODE_DRIVING;
                 DriectionMap(TAG, Mode);
-//                setUpMap();
+                setUpMap();
                 break;
             case R.id.rlBicycle:
                 ClearMap();
                 ClickModeBicycle("single");
                 Mode = CommonDefine.MODE_BICYCLING;
                 DriectionMap(TAG, Mode);
-//                setUpMap();
+                setUpMap();
                 break;
             case R.id.rlWalk:
                 ClearMap();
                 ClickModeWalk("single");
                 Mode = CommonDefine.MODE_WALKING;
                 DriectionMap(TAG, Mode);
-//                setUpMap();
+                setUpMap();
                 break;
             case R.id.rlSingle:
                 ClearMap();
@@ -579,6 +598,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //region command constructor
     private void SetDefault() {
+        setUpMap();
         Mode = CommonDefine.MODE_DRIVING;
         TAG = CommonDefine.CURRENT_LOCATION;
 
@@ -683,19 +703,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(final Location location) {
-
-//        Toast.makeText(context, "Location changed \n Lat: " + location.getLatitude(), Toast.LENGTH_SHORT).show();
-
         currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-
-        //Showing Current Location Marker on Map
-        final LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(myLatLng);
 
 //        locationManager.requestLocationUpdates(provider, 1000, 0, this);
 
@@ -710,21 +722,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-//        mCurrLocationMarker = mMap.addMarker(markerOptions);
 
-        //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-
-        //show marker of LBS
-        if (func.equals(CommonDefine.LBS)){
-            Intent intent = getIntent();
-            String nameLBS = intent.getStringExtra("name");
-            double lat = intent.getDoubleExtra("lat", 21.0f);
-            double lon = intent.getDoubleExtra("lon", 105.0f);
-            drawMarkerLBS(lat, lon, nameLBS);
-        }
+        final LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
 
         /*---------------check near object interest POI----------------------*/
@@ -732,6 +731,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //        getIntentData();
         if (func.equals("SMART")){
+            //invisible cardview description
+            cvInfoDes.setVisibility(View.GONE);
+
+            //get setting mode travel
+            preferences = getSharedPreferences(CommonDefine.SETTING, MODE_PRIVATE);
+            Mode = preferences.getString(CommonDefine.MODE_TRAVEL, CommonDefine.MODE_DRIVING);
+
             //get radius access POI
             RADIS_MAX = Double.parseDouble(preferences.getString(CommonDefine.RADIUS_ACCESS, "50"));
 
@@ -771,6 +777,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 //show all POI markers
                                 showAllPOIMarkers(listPOI);
 
+                                //setup digital map
+                                setUpMap();
+
                                 for (POI poi : listPOI){
                                     Location locDest = new Location("dest");
                                     locDest.setLatitude(poi.getLatitude());
@@ -797,7 +806,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         });
 
                                         if (minDistance > 50) //cach POI 50m
-                                            Toast.makeText(MapsActivity.this, "Bạn đang cách " + minPOI.getName() +(int) minDistance + "m", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MapsActivity.this, "Bạn đang cách " + minPOI.getName() +(int) minDistance + " m", Toast.LENGTH_SHORT).show();
                                         else
                                             Toast.makeText(MapsActivity.this, "Bạn đang ở gần " + minPOI.getName() , Toast.LENGTH_SHORT).show();
                                         LatLng latLng = new LatLng(minPOI.getLatitude(), minPOI.getLongitude());
@@ -814,11 +823,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         Marker markerPOI = mMap.addMarker(markerOptions1);
                                         markerPOI.setTag(minPOI);
                                         markerPOI.showInfoWindow();
-//                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//                                        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
 
                                         //routing to POI
-                                        DirectionGoogleMapFor2Point(myLatLng, latLng, CommonDefine.MODE_WALKING);
+                                        DirectionGoogleMapFor2Point(myLatLng, latLng, Mode);
                                     } else {
                                         try {
                                             //alert not found poi ringstone
@@ -867,7 +876,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             VolleySingleton.getInstance(context).addToRequestQueue(request);
 
-        } else {
+        }
+        else { //Either function on Maps
+            //Showing Current Location Marker on Map
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(myLatLng);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+//        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+            //move map camera
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+
+            //show marker of LBS
+            if (func.equals(CommonDefine.LBS)){
+                Intent intent = getIntent();
+                String nameLBS = intent.getStringExtra("name");
+                double lat = intent.getDoubleExtra("lat", 21.0f);
+                double lon = intent.getDoubleExtra("lon", 105.0f);
+                drawMarkerLBS(lat, lon, nameLBS);
+            }
+
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -1037,7 +1066,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String addressTo = edTo.getText().toString();
 
         txtTitleOri.setText("Điểm đi: " + addressFrom);
-        txtTitleDes.setText("Điểm đi: " + addressTo);
+        txtTitleDes.setText("Điểm đến: " + addressTo);
 
         if (addressFrom.equals("")) {
             Toast.makeText(context, "Bạn chưa nhập địa chỉ điểm đi", Toast.LENGTH_LONG).show();
@@ -1057,7 +1086,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
 
         try {
-            GeoJsonLayer layer = new GeoJsonLayer(mMap, R.raw.test_bkhn, getApplicationContext());
+            GeoJsonLayer layer = new GeoJsonLayer(mMap, R.raw.tan_trao_map, getApplicationContext());
             //set color to geojson map
             layer.getDefaultLineStringStyle().setColor(Color.YELLOW);
             layer.addLayerToMap();
@@ -1244,7 +1273,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Output format
         String output = "json";
         // Building the url to the web service
-        String url = GOOGLEMAP_DIRECTION + output + "?" + parameters + "&key=AIzaSyBcR6y_giPahewOFi2Hv78KpaBPLIZEut0";
+        String url = GOOGLEMAP_DIRECTION + output + "?" + parameters + "&key=AIzaSyBcR6y_giPahewOFi2Hv78KpaBPLIZEut0&language=vi";
 
         Log.d("GOOGLE_MAP_DIRECTION", url);
 
@@ -1293,8 +1322,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         isShowCardViewDes = !isShowCardViewDes;
         if (isShowCardViewDes){
             cvInfoDes.setVisibility(View.VISIBLE);
+            lnInfoDes.setVisibility(View.VISIBLE);
         } else {
             cvInfoDes.setVisibility(View.INVISIBLE);
+            lnInfoDes.setVisibility(View.GONE);
         }
     }
 
@@ -1447,12 +1478,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 String distance = obj.getJSONObject("distance").getString("text");
                 String duration = obj.getJSONObject("duration").getString("text");
 
-                List<HashMap<String, String>> temp = new ArrayList<HashMap<String, String>>();
-                HashMap<String, String> hashMap = new HashMap<>();
-                hashMap.put("distance", distance);
-                hashMap.put("duration", duration);
-                temp.add(hashMap);
-                routes.add(temp);
+                List<HashMap<String, String>> temp1 = new ArrayList<HashMap<String, String>>();
+                HashMap<String, String> hashMap1 = new HashMap<>();
+                hashMap1.put("distance", distance);
+                hashMap1.put("duration", duration);
+                temp1.add(hashMap1);
+                routes.add(temp1);
+
+
+                JSONArray jSteps = ((JSONObject) jLegs.get(0)).getJSONArray("steps");
+                List<HashMap<String, String>> temp2 = new ArrayList<HashMap<String, String>>();
+                int lengthStep = jSteps.length();
+                for (int i = 0; i < lengthStep; i++){
+                    HashMap<String, String> hashMap2 = new HashMap<>();
+                    JSONObject itemStep = jSteps.getJSONObject(i);
+                    String distanceStep = itemStep.getJSONObject("distance").getString("text");
+                    String html_instructions = itemStep.getString("html_instructions");
+                    hashMap2.put("html_instructions", html_instructions);
+                    hashMap2.put("distance", distanceStep);
+                    temp2.add(hashMap2);
+                    routes.add(temp2);
+                }
 
 
             } catch (Exception e) {
@@ -1493,6 +1539,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //show direction
             txtDistanceDes.setText(distance);
             txtDurationDes.setText(duration);
+
+            //show detail direction on listview
+            listDetailDirection = new ArrayList<>();
+            List<HashMap<String, String>> steps = result.get(2);
+            int lengthStep = steps.size();
+            for (int j = 0 ; j < lengthStep ; j++){
+                HashMap<String, String> itemStep = steps.get(j);
+                String distanceStep = itemStep.get("distance");
+                String html_instructions = itemStep.get("html_instructions");
+                DetailDirection detailDirection = new DetailDirection(html_instructions, distanceStep);
+                listDetailDirection.add(detailDirection);
+            }
+            adapterDetailDirection = new AdapterDetailDirection(context, listDetailDirection);
+            lvDetailTravel.setAdapter(adapterDetailDirection);
 
             isShowCardViewDes = true;
             lnInfoDes.setVisibility(View.VISIBLE);
@@ -1547,7 +1607,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(21.004508, 105.844160), 16.0f));
 
         if (mMap != null) {
-            setUpMap();
+
             SetDefault();
             mMap.setOnMapLongClickListener(this);
         }

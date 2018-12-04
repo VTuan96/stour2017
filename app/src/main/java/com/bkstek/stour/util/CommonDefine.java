@@ -24,6 +24,7 @@ public interface CommonDefine {
     public static final String MODE_DRIVING = "driving";
     public static final String MODE_BICYCLING = "bicycle";
     public static final String MODE_WALKING = "walking";
+    public static final String MODE_TRAVEL = "MODE_TRAVEL";
 
     ///url get data
 
