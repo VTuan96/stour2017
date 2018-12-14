@@ -130,4 +130,9 @@ public interface CommonDefine {
     public static final String BANK = "BANK";
     public static final String MART = "MART";
     public static final String LBS = "LBS";
+    public static final String LBS_FUNC = "LBS_FUNC";
+    public static final String AROUND_HERE = "AROUND_HERE";
+    public static final String LIST_LBS = "LIST_LBS";
+    public static final String LBS_BUNDLE = "LBS_BUNDLE";
+    public static final String RADIUS_AROUND_LBS = "RADIUS_AROUND_LBS";
 }

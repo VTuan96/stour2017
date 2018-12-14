@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -101,7 +102,7 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
     List<Fragment> fragments;
     AdapterSlider adapterSlider;
 
-//    String video_id = "uYOMT3VYxvA";
+    //    String video_id = "uYOMT3VYxvA";
     String video_id = "https://www.youtube.com/watch?v=kok0wm_W3es&feature=youtu.be";
 
     private static final int REQUEST_CALL_PHONE_PERMISSION = 1;
@@ -232,10 +233,8 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+" + txtPhone.getText()));
                 // Here, thisActivity is the current activity
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
-                }
-                else
-                {
+                    ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
+                } else {
                     startActivity(intent);
                 }
             }
@@ -258,6 +257,8 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
                 } else {
                     isPlayAudio = !isPlayAudio;
                     if (isPlayAudio) {
+//                        Drawable icon = getResources().getDrawable(R.drawable.mr_media_pause_light);
+//                        btnAudio.setImageDrawable(icon);
                         btnAudio.setBackgroundResource(R.drawable.ic_pause_circle_outline_black_24dp);
                         try {
                             playerAudio = new MediaPlayer();
@@ -299,9 +300,12 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
         } else if (TAG.equals("HIS")) {
             Intent iBack = new Intent(context, HistoryActivity.class);
             FUNC = getIntent().getStringExtra(CommonDefine.FUNC);
-            if (FUNC!=null && FUNC.equals(CommonDefine.SMART)) {
+            if (FUNC.equals(CommonDefine.SMART)) {
                 iBack = new Intent(context, MapsActivity.class);
                 iBack.putExtra(CommonDefine.FUNC, CommonDefine.SMART);
+            } else if (FUNC.equals(CommonDefine.ROUTING)) {
+                iBack = new Intent(context, MapsActivity.class);
+                iBack.putExtra(CommonDefine.FUNC, CommonDefine.ROUTING);
             }
 
             startActivity(iBack);
@@ -355,7 +359,7 @@ public class NoneServiceActivity extends AppCompatActivity implements ViewPager.
             url = GET_RESTAURANT_DETAIL + "?restaurantId=" + locationId;
             lnAudio.setVisibility(View.GONE);
             btnAudio.setVisibility(View.GONE);
-        } else if (TAG.equals("CUL")){
+        } else if (TAG.equals("CUL")) {
             url = GET_CULTURE_DETAIL + "?culturalId=" + locationId;
             lnOpen.setVisibility(View.GONE);
             lnAudio.setVisibility(View.GONE);

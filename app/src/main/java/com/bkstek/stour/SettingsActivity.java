@@ -18,7 +18,7 @@ import com.bkstek.stour.util.CommonDefine;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    EditText edtTimeUpdateLocation, edtRadiusAccess;
+    EditText edtTimeUpdateLocation, edtRadiusAccess, edtRadiusAroundLBS;
     Button btnSave;
     SharedPreferences preferences;
 
@@ -26,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
     RadioButton rbWalking, rbDriving, rbBicycling;
     RadioGroup rgModeTravel;
 
-    String timeUpdateLocation = "", radiusAccess = "";
+    String timeUpdateLocation = "", radiusAccess = "", radisAroundLBS = "";
     int modeTravel = 0;
     String modeTravelStr = "";
 
@@ -37,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         edtRadiusAccess = findViewById(R.id.edtRadiusAccess);
         edtTimeUpdateLocation = findViewById(R.id.edtTimeUpdateLocation);
+        edtRadiusAroundLBS = findViewById(R.id.edtRadiusAroundLBS);
         btnSave = findViewById(R.id.btnSaveSetting);
 
         rbWalking = findViewById(R.id.rbWalking);
@@ -55,6 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.putString(CommonDefine.TIME_UPDATE_LOCATION, timeUpdateLocation);
                     editor.putString(CommonDefine.RADIUS_ACCESS, radiusAccess);
                     editor.putString(CommonDefine.MODE_TRAVEL, modeTravelStr);
+                    editor.putString(CommonDefine.RADIUS_AROUND_LBS, radisAroundLBS);
                     editor.apply();
                     editor.commit();
 
@@ -84,7 +86,8 @@ public class SettingsActivity extends AppCompatActivity {
     private boolean checkValidMapField() {
         timeUpdateLocation = edtTimeUpdateLocation.getText().toString();
         radiusAccess = edtRadiusAccess.getText().toString();
-        if (timeUpdateLocation.length() > 0 && radiusAccess.length() > 0){
+        radisAroundLBS = edtRadiusAroundLBS.getText().toString();
+        if (timeUpdateLocation.length() > 0 && radiusAccess.length() > 0 && radisAroundLBS.length() >0){
             return true;
         }
         return false;
@@ -93,9 +96,11 @@ public class SettingsActivity extends AppCompatActivity {
     private void getDefaultPreferences() {
         preferences = getSharedPreferences(CommonDefine.SETTING, MODE_PRIVATE);
         String timeUpdatePref = preferences.getString(CommonDefine.TIME_UPDATE_LOCATION, "5");
-        String radiusAccessPref = preferences.getString(CommonDefine.RADIUS_ACCESS, "1");
+        String radiusAccessPref = preferences.getString(CommonDefine.RADIUS_ACCESS, "1000");
+        String radiusAroudnLBSPref = preferences.getString(CommonDefine.RADIUS_AROUND_LBS, "5");
         edtTimeUpdateLocation.setText(timeUpdatePref);
         edtRadiusAccess.setText(radiusAccessPref);
+        edtRadiusAroundLBS.setText(radiusAroudnLBSPref);
         modeTravelStr = preferences.getString(CommonDefine.MODE_TRAVEL, CommonDefine.MODE_DRIVING);
         if (modeTravelStr.equals(CommonDefine.MODE_DRIVING))
             modeTravel = R.id.rbDriving;

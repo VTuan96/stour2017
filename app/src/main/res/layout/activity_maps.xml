@@ -1,442 +1,520 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/lnContainMap">
-
+        android:layout_height="match_parent"
+        android:layout_above="@id/cvPlay"
+        android:id="@+id/flRoot">
 
         <LinearLayout
-            android:id="@+id/lnHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/lnContainMap">
+
 
             <LinearLayout
-                android:id="@+id/lnChooseMode"
+                android:id="@+id/lnHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/splashbackgroudcolor"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/rlSingle"
+                <LinearLayout
+                    android:id="@+id/lnChooseMode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_oval_layout">
-
-                    <TextView
-                        android:id="@+id/txtSingle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="@string/single_routing"
-                        android:textColor="@color/splashbackgroudcolor" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rlMulti"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/txtMulti"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="@string/multi_routing"
-                        android:textColor="@color/white" />
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/lnMultiRouting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/lnChooseMode"
-                android:background="@color/splashbackgroudcolor"
-                android:visibility="gone">
-
-                <RelativeLayout
-                    android:id="@+id/rlButtonMultiRoute"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/custom_oval_layout"
+                    android:background="@color/splashbackgroudcolor"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:id="@+id/rlSingle"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="@string/multi_routing"
-                        android:textColor="@color/splashbackgroudcolor" />
-                </RelativeLayout>
-            </RelativeLayout>
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/custom_oval_layout">
 
+                        <TextView
+                            android:id="@+id/txtSingle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/single_routing"
+                            android:textColor="@color/splashbackgroudcolor" />
+                    </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/rlPosition"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_below="@+id/lnMultiRouting"
-                android:background="@color/background_map"
-                android:orientation="horizontal">
+                    <RelativeLayout
+                        android:id="@+id/rlMulti"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/txtMulti"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/multi_routing"
+                            android:textColor="@color/white" />
+                    </RelativeLayout>
+
+                </LinearLayout>
 
                 <RelativeLayout
+                    android:id="@+id/lnMultiRouting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_below="@+id/lnChooseMode"
+                    android:background="@color/splashbackgroudcolor"
+                    android:visibility="gone">
 
-                    <LinearLayout
-                        android:id="@+id/lnFrom"
+                    <RelativeLayout
+                        android:id="@+id/rlButtonMultiRoute"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/custom_oval_layout"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="20dp"
-                            android:src="@drawable/ic_mylocation" />
-
-                        <EditText
-                            android:id="@+id/edFrom"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:focusableInTouchMode= "false"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:backgroundTint="@color/white"
-                            android:hint="@string/from"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/lnTo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/lnFrom"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="20dp"
-                            android:src="@drawable/ic_place" />
-
-                        <EditText
-                            android:id="@+id/edTo"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:focusableInTouchMode= "false"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:backgroundTint="@color/white"
-                            android:hint="@string/to"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/multi_routing"
+                            android:textColor="@color/splashbackgroudcolor" />
+                    </RelativeLayout>
                 </RelativeLayout>
 
 
                 <LinearLayout
+                    android:id="@+id/rlPosition"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:orientation="vertical">
+                    android:layout_height="100dp"
+                    android:layout_below="@+id/lnMultiRouting"
+                    android:background="@color/background_map"
+                    android:orientation="horizontal">
 
-                    <at.markushi.ui.CircleButton
-                        android:id="@+id/btnSearch"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
-                        android:src="@drawable/ic_direction1"
-                        app:cb_color="@color/white"
-                        app:cb_pressedRingWidth="8dip" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:id="@+id/lnFrom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="20dp"
+                                android:src="@drawable/ic_mylocation" />
+
+                            <EditText
+                                android:id="@+id/edFrom"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:focusableInTouchMode= "false"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:backgroundTint="@color/white"
+                                android:hint="@string/from"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/white"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/lnTo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/lnFrom"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="20dp"
+                                android:src="@drawable/ic_place" />
+
+                            <EditText
+                                android:id="@+id/edTo"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:focusableInTouchMode= "false"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:backgroundTint="@color/white"
+                                android:hint="@string/to"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/white"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:orientation="vertical">
+
+                        <at.markushi.ui.CircleButton
+                            android:id="@+id/btnSearch"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="20dp"
+                            android:src="@drawable/ic_direction1"
+                            app:cb_color="@color/white"
+                            app:cb_pressedRingWidth="8dip" />
+                    </LinearLayout>
+
+
                 </LinearLayout>
 
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/rlDown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rlPosition"
-                android:background="@color/splashbackgroudcolor"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/rlDown"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:contentDescription="@string/account"
-                    android:src="@drawable/down1" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/lnDriving"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_below="@+id/rlDown"
-                android:background="@color/splashbackgroudcolor"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:id="@+id/rlCar"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_oval_layout">
+                    android:layout_below="@+id/rlPosition"
+                    android:background="@color/splashbackgroudcolor"
+                    android:visibility="gone">
 
                     <ImageView
-                        android:id="@+id/imCar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/car_7" />
-
+                        android:contentDescription="@string/account"
+                        android:src="@drawable/down1" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/rlBicycle"
+                <LinearLayout
+                    android:id="@+id/lnDriving"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="1">
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/rlDown"
+                    android:background="@color/splashbackgroudcolor"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/imBicycle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/ic_motorcycle_white_24dp" />
-                </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/rlCar"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/custom_oval_layout">
 
-                <RelativeLayout
-                    android:id="@+id/rlWalk"
+                        <ImageView
+                            android:id="@+id/imCar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:foregroundGravity="center"
+                            android:src="@drawable/car_7" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rlBicycle"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/imBicycle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:foregroundGravity="center"
+                            android:src="@drawable/ic_motorcycle_white_24dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rlWalk"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/imWalk"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:foregroundGravity="center"
+                            android:src="@drawable/walking_2" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnDrivingMulti"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="1">
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/lnDriving"
+                    android:background="@color/splashbackgroudcolor"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
-                    <ImageView
-                        android:id="@+id/imWalk"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/walking_2" />
-                </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/rlCarMulti"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/custom_oval_layout">
 
+                        <ImageView
+                            android:id="@+id/imCarMulti"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:foregroundGravity="center"
+                            android:src="@drawable/car_7" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rlBicycleMulti"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/imBicycleMulti"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:foregroundGravity="center"
+                            android:src="@drawable/ic_motorcycle_white_24dp" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rlWalkMulti"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/imWalkMulti"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:foregroundGravity="center"
+                            android:src="@drawable/walking_2" />
+                    </RelativeLayout>
+
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/lnDrivingMulti"
+
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_below="@+id/lnDriving"
-                android:background="@color/splashbackgroudcolor"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:layout_height="match_parent"
+                android:layout_below="@+id/lnDrivingMulti"
+                map:uiZoomControls="true"
+                tools:context="com.bkstek.stour.MapsActivity" />
 
-                <RelativeLayout
-                    android:id="@+id/rlCarMulti"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_oval_layout">
-
-                    <ImageView
-                        android:id="@+id/imCarMulti"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/car_7" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rlBicycleMulti"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/imBicycleMulti"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/ic_motorcycle_white_24dp" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rlWalkMulti"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:id="@+id/imWalkMulti"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:foregroundGravity="center"
-                        android:src="@drawable/walking_2" />
-                </RelativeLayout>
-
-            </LinearLayout>
         </LinearLayout>
 
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/lnDrivingMulti"
-            map:uiZoomControls="true"
-            tools:context="com.bkstek.stour.MapsActivity" />
-
-    </LinearLayout>
-
-
-    <!--Cardview show all infor about direction 2 point-->
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin = "@dimen/size5dp"
-        android:id="@+id/cvInforDes"
-        android:layout_gravity="bottom"
-        android:visibility="visible">
-
-        <LinearLayout
+        <!--Cardview show all infor about direction 2 point-->
+        <android.support.v7.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/txtHideInfoDes"
-                android:text="@string/backSymbol"
-                android:gravity="center_vertical"
-                android:textSize="50sp"
-                android:layout_marginLeft="@dimen/size5dp"
-                android:layout_marginRight="@dimen/size3dp"/>
+            android:layout_margin = "@dimen/size5dp"
+            android:id="@+id/cvInforDes"
+            android:layout_gravity="bottom"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                android:id="@+id/lnInforDes">
+                android:orientation="horizontal">
+
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Điểm đi: ..."
-                    android:id="@+id/txtTitleOri"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="10dp"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Điểm đến: ..."
-                    android:id="@+id/txtTitleDes"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="10dp"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtDistanceDes"
-                    android:text="... km"
-                    android:layout_marginLeft="10dp"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/txtDurationDes"
-                    android:text="... phút"
-                    android:layout_marginLeft="10dp"/>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/gray"/>
-                <TextView
-                    android:id="@+id/txtTitleDirection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Các bước"
-                    android:padding="@dimen/size10dp"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="@dimen/size3dp"/>
-                <ListView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:id="@+id/lvDetailTravel"
-                    android:divider="@null"></ListView>
+                    android:id="@+id/txtHideInfoDes"
+                    android:text="@string/backSymbol"
+                    android:gravity="center_vertical"
+                    android:textSize="50sp"
+                    android:layout_marginLeft="@dimen/size5dp"
+                    android:layout_marginRight="@dimen/size3dp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:id="@+id/lnInforDes">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Điểm đi: ..."
+                        android:id="@+id/txtTitleOri"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Điểm đến: ..."
+                        android:id="@+id/txtTitleDes"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtDistanceDes"
+                        android:text="... km"
+                        android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtDurationDes"
+                        android:text="... phút"
+                        android:layout_marginLeft="10dp"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray"/>
+                    <TextView
+                        android:id="@+id/txtTitleDirection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Các bước"
+                        android:padding="@dimen/size10dp"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:layout_marginBottom="@dimen/size3dp"/>
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/lvDetailTravel"
+                        android:divider="@null"></ListView>
+                </LinearLayout>
             </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
+
+    <!--Cardview show play information-->
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_map"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtTitlePlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toLeftOf="@+id/viewTempVideo"
+                    android:text="..."
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/viewTempVideo"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@id/imgVideo"
+                    android:layout_marginRight="@dimen/size3dp"
+                    android:background="@color/gray" />
+
+                <ImageView
+                    android:id="@+id/imgVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/viewTempPlay"
+                    android:layout_marginRight="@dimen/size3dp"
+                    android:src="@drawable/ic_ondemand_video_white_36dp"
+                    android:tint="@color/white" />
+
+                <View
+                    android:id="@+id/viewTempPlay"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_toLeftOf="@id/imgPlay"
+                    android:background="@color/gray" />
+
+                <ImageView
+                    android:id="@+id/imgPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/mr_media_play_light"
+                    android:tint="@color/white" />
+            </RelativeLayout>
         </LinearLayout>
+
 
     </android.support.v7.widget.CardView>
 
-</FrameLayout>
+</RelativeLayout>
 

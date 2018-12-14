@@ -150,6 +150,7 @@
     <string name="temp">Nhiệt độ (<sup>o</sup>C)</string>
     <string name="humi">Độ ẩm (%)</string>
     <string name="weather">Thời tiết</string>
+    <string name="around_here">Quanh đây</string>
 
     <!--<string name="facebook_app_id">2162649873978145</string>-->
     <!--<string name="fb_login_protocol_scheme">fb2162649873978145</string>-->

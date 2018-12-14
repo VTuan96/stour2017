@@ -10,6 +10,7 @@
         <item name="android:textColorSecondary">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:statusBarColor">@color/splashbackgroudcolor</item>
+        <item name="actionMenuTextColor">@color/black</item>
     </style>
 
     // custom style here
@@ -59,10 +60,11 @@
     //style of toolbar
     <style name="AppTheme.MyToolbarStyle">
         <!--This line changes the color of text in Toolbar-->
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/black</item>
         <!--This line changes the color of icons in toolbar (back, overflow menu icons)-->
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="actionMenuTextColor">@color/black</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 

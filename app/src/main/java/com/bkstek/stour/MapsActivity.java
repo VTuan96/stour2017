@@ -1,18 +1,22 @@
 package com.bkstek.stour;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +26,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -47,8 +52,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.bkstek.stour.adapter.AdapterDetailDirection;
 import com.bkstek.stour.adapter.CustomInfoWindowMapAdapter;
 import com.bkstek.stour.component.DialogPOIOrigin;
+import com.bkstek.stour.helper.CustomDialog;
 import com.bkstek.stour.mapdigital.TileProviderFactory;
 import com.bkstek.stour.model.DetailDirection;
+import com.bkstek.stour.model.LBS;
 import com.bkstek.stour.model.POI;
 import com.bkstek.stour.util.CommonDefine;
 import com.bkstek.stour.util.DirectionsJSONParser;
@@ -106,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, GoogleMap.OnMapLongClickListener, View.OnClickListener,
-        GoogleMap.OnMapClickListener {
+        GoogleMap.OnMapClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     public static GoogleMap mMap;
     EditText edFrom, edTo;
@@ -145,7 +152,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String TAG = ""; // set tag for driection mode
 
     private String Mode = "";
-    private double RADIS_MAX = 230; //max radius POI (unit: m)
+    private double RADIUS_MAX = 230; //max radius POI (unit: m)
+    private double RADIUS_AROUND_LBS = 5; //max radius around LBS (unit: km)
     private double TIME_TO_UPDATE = 10000; // 10s
 
     //list latlong for multi direction
@@ -163,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LinearLayout lnHeader;
     SharedPreferences preferences ;
 
-    MediaPlayer mMediaPlayer;
+    MediaPlayer mMediaPlayer = new MediaPlayer();
 
     List<POI> tempListPOI = new ArrayList<>();
 
@@ -184,6 +192,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static ListView lvDetailTravel;
     public static ArrayList<DetailDirection> listDetailDirection;
     public static AdapterDetailDirection adapterDetailDirection;
+
+    //show play media of POI
+    CardView cvPlay;
+    TextView txtTitlePlay;
+    ImageView imgPlay, imgVideo;
+
+    POI lastPOI = new POI();
+    Boolean isPlayAudio = false;
+    String AudioURL = "";
+    String VideoURL = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,12 +246,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         txtTitleDirection = findViewById(R.id.txtTitleDirection);
         lnContainMap = findViewById(R.id.lnContainMap);
 
+        cvPlay = findViewById(R.id.cvPlay);
+        txtTitlePlay = findViewById(R.id.txtTitlePlay);
+        imgPlay = findViewById(R.id.imgPlay);
+        imgVideo = findViewById(R.id.imgVideo);
+
         rlDown = (RelativeLayout) findViewById(R.id.rlDown);
 
         context = MapsActivity.this;
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
+            if (!checkPermissions())
+                requestLocationPermission();
         }
 
 
@@ -245,13 +269,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //get shareprefences
         preferences = getSharedPreferences(CommonDefine.SETTING, MODE_PRIVATE);
-        RADIS_MAX = Double.parseDouble(preferences.getString(CommonDefine.RADIUS_ACCESS, "50"));
+        RADIUS_MAX = Double.parseDouble(preferences.getString(CommonDefine.RADIUS_ACCESS, "50"));
         TIME_TO_UPDATE = Double.parseDouble(preferences.getString(CommonDefine.TIME_UPDATE_LOCATION, "10")) * 1000;
 
         if (func.equals(CommonDefine.SMART)){
             lnHeader.setVisibility(View.GONE);
+//            cvPlay.setVisibility(View.VISIBLE);
+            cvInfoDes.setVisibility(View.GONE);
         } else {
             lnHeader.setVisibility(View.VISIBLE);
+            cvPlay.setVisibility(View.GONE);
+            cvInfoDes.setVisibility(View.VISIBLE);
         }
 
 
@@ -377,13 +405,72 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listDetailDirection = new ArrayList<>();
         adapterDetailDirection = new AdapterDetailDirection(context, listDetailDirection);
         lvDetailTravel.setAdapter(adapterDetailDirection);
+
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Drawable icon = getResources().getDrawable(R.drawable.mr_media_play_light);
+                imgPlay.setImageDrawable(icon);
+                mp.release();
+                Toast.makeText(MapsActivity.this, "complete ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        imgPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isPlayAudio = !isPlayAudio;
+                if (isPlayAudio){
+                    Drawable icon = getResources().getDrawable(R.drawable.mr_media_pause_light);
+                    imgPlay.setImageDrawable(icon);
+                    if (mMediaPlayer != null) {
+                        try {
+                            mMediaPlayer = new MediaPlayer();
+                            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                            if (AudioURL != null && !AudioURL.equals(""))
+                                mMediaPlayer.setDataSource(AudioURL);
+                            else
+                                mMediaPlayer.setDataSource(CommonDefine.DOMAIN_STOUR + "/UploadedFiles/files/Dinh%20Tan%20Trao(eng).mp3");
+                            mMediaPlayer.prepare(); // might take long! (for buffering, etc)
+                            mMediaPlayer.start();
+                        } catch (IOException ex){
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    Drawable icon = getResources().getDrawable(R.drawable.mr_media_play_light);
+                    imgPlay.setImageDrawable(icon);
+                    if (mMediaPlayer != null)
+                        mMediaPlayer.stop();
+                }
+            }
+        });
+
+
+        imgVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lastPOI != null) {
+                    VideoURL = lastPOI.getVideoDir();
+                    Intent iYoutube = new Intent(context, YoutubeActivity.class);
+                    iYoutube.putExtra(CommonDefine.VIDEO_DIR, VideoURL);
+                    iYoutube.putExtra("locationID", lastPOI.getId());
+                    iYoutube.putExtra("TAG", CommonDefine.SMART);
+                    iYoutube.putExtra(CommonDefine.TITLE, lastPOI.getName());
+                    startActivity(iYoutube);
+
+                }
+            }
+        });
     }
 
 
     private void getIntentData() {
         Intent intent = getIntent();
-        if (intent != null)
+        if (intent != null) {
             func = intent.getStringExtra(CommonDefine.FUNC);
+            Log.d("func--->", func);
+        }
         else
             func = "ROUTING";
     }
@@ -436,6 +523,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ClickMultiLayout();
                 ClearMap();
                 setUpMap();
+                setupDefaultInforDes();
                 latLngList = new ArrayList<>();
                 tempPOI = new ArrayList<>();
                 new DialogPOIOrigin(context, listPOI, tempPOI, latLngList, func).show();
@@ -487,6 +575,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 break;
         }
+    }
+
+    private void setupDefaultInforDes() {
+        txtTitleOri.setText("Điểm đi: ...");
+        txtTitleDes.setText("Điểm đến: ...");
+        txtDistanceDes.setText("... km");
+        txtDurationDes.setText("... phút");
+        listDetailDirection = new ArrayList<>();
+        adapterDetailDirection = new AdapterDetailDirection(context, listDetailDirection);
+        lvDetailTravel.setAdapter(adapterDetailDirection);
     }
 
     private void ClickSingleLayout() {
@@ -711,16 +809,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //        locationManager.requestLocationUpdates(provider, 1000, 0, this);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
 
 
         final LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -729,17 +827,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*---------------check near object interest POI----------------------*/
         //get list POI
 
+        //get setting mode travel
+        preferences = getSharedPreferences(CommonDefine.SETTING, MODE_PRIVATE);
+        Mode = preferences.getString(CommonDefine.MODE_TRAVEL, CommonDefine.MODE_DRIVING);
+
+        //get radius access POI
+        RADIUS_MAX = Double.parseDouble(preferences.getString(CommonDefine.RADIUS_ACCESS, "50"));
+        RADIUS_AROUND_LBS = Double.parseDouble(preferences.getString(CommonDefine.RADIUS_AROUND_LBS, "5"));
+
 //        getIntentData();
         if (func.equals("SMART")){
             //invisible cardview description
             cvInfoDes.setVisibility(View.GONE);
 
-            //get setting mode travel
-            preferences = getSharedPreferences(CommonDefine.SETTING, MODE_PRIVATE);
-            Mode = preferences.getString(CommonDefine.MODE_TRAVEL, CommonDefine.MODE_DRIVING);
-
-            //get radius access POI
-            RADIS_MAX = Double.parseDouble(preferences.getString(CommonDefine.RADIUS_ACCESS, "50"));
+            final ProgressDialog alertDialog = ProgressDialog.show(context, "", "Đang tải dữ liệu...");
 
             //create new list POIs
             listPOI = new ArrayList<>();
@@ -751,7 +852,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             try {
                                 //nearest POI
                                 POI minPOI = null;
-                                double minDistance = RADIS_MAX;
+                                double minDistance = RADIUS_MAX;
 
                                 JSONArray array = response.getJSONArray("Data");
                                 int count = array.length();
@@ -770,6 +871,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         poi.setImage(object1.getString("FileUrl"));
                                         poi.setAddress(object.getString("Address"));
                                         poi.setVideoDir(object.getString("VideoDir"));
+                                        poi.setVideoDir(object.getString("Audio"));
 
                                         listPOI.add(poi);
                                     }
@@ -780,7 +882,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 //setup digital map
                                 setUpMap();
 
-                                for (POI poi : listPOI){
+                                for (POI poi : listPOI) {
                                     Location locDest = new Location("dest");
                                     locDest.setLatitude(poi.getLatitude());
                                     locDest.setLongitude(poi.getLongitude());
@@ -792,23 +894,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
                                 }
 
-                                if (minDistance <= RADIS_MAX ) { //check distance to POI to RADIUS_MAX
-                                    if ( minPOI != null) {
-                                        mMediaPlayer = MediaPlayer.create(context, R.raw.raw_find_out);
-                                        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                                        mMediaPlayer.start();
 
-                                        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                            @Override
-                                            public void onCompletion(MediaPlayer mp) {
-                                                mp.release();
-                                            }
-                                        });
+                                if (minDistance <= RADIUS_MAX) { //check distance to POI to RADIUS_MAX
+                                    if (minPOI != null) {
+                                        //alert not found poi ringstone
+                                        alarmRingStone(R.raw.raw_find_out);
 
                                         if (minDistance > 50) //cach POI 50m
-                                            Toast.makeText(MapsActivity.this, "Bạn đang cách " + minPOI.getName() +(int) minDistance + " m", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MapsActivity.this, "Bạn đang cách " + minPOI.getName() + " " + (int) minDistance + " m", Toast.LENGTH_SHORT).show();
                                         else
-                                            Toast.makeText(MapsActivity.this, "Bạn đang ở gần " + minPOI.getName() , Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MapsActivity.this, "Bạn đang ở gần " + minPOI.getName(), Toast.LENGTH_SHORT).show();
                                         LatLng latLng = new LatLng(minPOI.getLatitude(), minPOI.getLongitude());
                                         MarkerOptions markerOptions1 = new MarkerOptions();
                                         markerOptions1.position(latLng);
@@ -824,40 +919,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         markerPOI.setTag(minPOI);
                                         markerPOI.showInfoWindow();
                                         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                                        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+                                        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
-                                        //routing to POI
-                                        DirectionGoogleMapFor2Point(myLatLng, latLng, Mode);
+                                        if (!lastPOI.equals(minPOI)) {
+                                            txtTitlePlay.setText(minPOI.getName());
+
+                                            AudioURL = minPOI.getAudio();
+
+                                            cvPlay.setVisibility(View.VISIBLE);
+
+                                            //routing to POI
+                                            DirectionGoogleMapFor2Point(myLatLng, latLng, Mode);
+
+                                            //update last POI
+                                            lastPOI = minPOI;
+
+                                        } else {
+                                            try {
+                                                //alert not found poi ringstone
+                                                alarmRingStone(R.raw.raw_not_found);
+
+                                                cvPlay.setVisibility(View.GONE);
+
+                                                Toast.makeText(MapsActivity.this, "Không có địa điểm nào trong bán kính " + (int) RADIUS_MAX + " m", Toast.LENGTH_SHORT).show();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
                                     } else {
                                         try {
                                             //alert not found poi ringstone
                                             alarmRingStone(R.raw.raw_not_found);
 
-                                            Toast.makeText(MapsActivity.this, "Không có địa điểm nào trong bán kính " + (int ) RADIS_MAX + "m", Toast.LENGTH_SHORT).show();
+                                            cvPlay.setVisibility(View.GONE);
+
+                                            Toast.makeText(MapsActivity.this, "Không có địa điểm nào trong bán kính " + (int) RADIUS_MAX + "m", Toast.LENGTH_SHORT).show();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
                                     }
-                                } else {
-                                    try {
-                                        mMediaPlayer = MediaPlayer.create(context, R.raw.raw_not_found);
-                                        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                                        mMediaPlayer.start();
-
-                                        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                            @Override
-                                            public void onCompletion(MediaPlayer mp) {
-                                                mp.release();
-                                            }
-                                        });
-
-                                        Toast.makeText(MapsActivity.this, "Không có địa điểm nào trong bán kính " + (int ) RADIS_MAX + "m", Toast.LENGTH_SHORT).show();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
                                 }
 
-                            } catch (JSONException e) {
+
+                                //dimiss aleart dialog downloading
+                                alertDialog.dismiss();
+
+                            } catch(JSONException e){
 
                             }
 
@@ -877,7 +984,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             VolleySingleton.getInstance(context).addToRequestQueue(request);
 
         }
+
         else { //Either function on Maps
+
             //Showing Current Location Marker on Map
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(myLatLng);
@@ -895,6 +1004,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double lat = intent.getDoubleExtra("lat", 21.0f);
                 double lon = intent.getDoubleExtra("lon", 105.0f);
                 drawMarkerLBS(lat, lon, nameLBS);
+            } else if (func.equals(CommonDefine.AROUND_HERE)){ //show all around lbs
+                Intent intent = getIntent();
+                Bundle bundle = intent.getBundleExtra(CommonDefine.LBS_BUNDLE);
+                ArrayList<LBS> listLBS = bundle.getParcelableArrayList(CommonDefine.LIST_LBS);
+
+                for (LBS lbs : listLBS){
+                    Location locDest = new Location("dest");
+                    locDest.setLatitude(lbs.getLat());
+                    locDest.setLongitude(lbs.getLon());
+                    float distance = location.distanceTo(locDest);
+
+                    if (distance <= RADIUS_AROUND_LBS * 1000) {
+                        drawMarkerLBS(lbs.getLat(), lbs.getLon(), lbs.getName());
+                    }
+                }
             }
 
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
@@ -914,13 +1038,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (poi != null) {
                         String VideoDir = poi.getVideoDir();
                         int locationID = poi.getId();
-                        Intent iYoutube = new Intent(context, YoutubeActivity.class);
-                        iYoutube.putExtra("VIDEO_ID", VideoDir);
-                        iYoutube.putExtra("locationID", locationID);
-                        iYoutube.putExtra("TAG", CommonDefine.ROUTING);
-                        iYoutube.putExtra("TAG", CommonDefine.ROUTING);
-                        iYoutube.putExtra(CommonDefine.TITLE, poi.getName());
-                        context.startActivity(iYoutube);
+//                        Intent iYoutube = new Intent(context, YoutubeActivity.class);
+//                        iYoutube.putExtra("VIDEO_ID", VideoDir);
+//                        iYoutube.putExtra("locationID", locationID);
+//                        iYoutube.putExtra("TAG", CommonDefine.ROUTING);
+//                        iYoutube.putExtra("TAG", CommonDefine.ROUTING);
+//                        iYoutube.putExtra(CommonDefine.TITLE, poi.getName());
+//                        context.startActivity(iYoutube);
+
+                        Intent iDetail = new Intent(context, NoneServiceActivity.class);
+                        iDetail.putExtra("PlaceID", locationID);
+                        iDetail.putExtra("TAG", "HIS");
+                        iDetail.putExtra(CommonDefine.FUNC, CommonDefine.ROUTING);
+
+                        context.startActivity(iDetail);
+                        finish();
                     }
                 }
             });
@@ -932,7 +1064,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //notifycation ringstone
     private void alarmRingStone(int raw){
-        mMediaPlayer = MediaPlayer.create(context, raw);
+        MediaPlayer mMediaPlayer = MediaPlayer.create(context, raw);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.start();
 
@@ -995,25 +1127,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    public boolean checkPermissions() {
+        int permissionState = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
 
-    public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+    public void requestLocationPermission() {
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
 
             // Asking user if explanation is needed
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+            boolean isShowRationale = ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            if (isShowRationale) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
 
                 //Prompt the user once explanation has been shown
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                        MY_PERMISSIONS_REQUEST_LOCATION);
 
+//                onRestart();
 
             } else {
                 // No explanation needed, we can request the permission.
@@ -1021,10 +1160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
-            return false;
-        } else {
-            return true;
-        }
+
     }
 
 
@@ -1042,6 +1178,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
+
+                        onResume();
 
                         if (mGoogleApiClient == null) {
                             buildGoogleApiClient();
@@ -1431,7 +1569,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 lineOptions.addAll(points);
-                lineOptions.width(12);
+                lineOptions.width(15);
                 // Changing the color polyline according to the mode
 
                 lineOptions.color(Color.RED);
@@ -1659,19 +1797,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
+        if (preferences != null)
+            TIME_TO_UPDATE = Double.parseDouble(preferences.getString(CommonDefine.TIME_UPDATE_LOCATION, "10")) * 1000;
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval((long)TIME_TO_UPDATE);
+        mLocationRequest.setFastestInterval((long)TIME_TO_UPDATE);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        if (checkPermissions()) {
+
+            if (mGoogleApiClient != null && mGoogleApiClient.isConnected())
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,  this);
+        if (mGoogleApiClient != null)
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,  this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,  this);
+        if (mGoogleApiClient != null)
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient,  this);
     }
 
     @Override
@@ -1692,7 +1843,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert);
         builder.setMessage("Bạn chưa mở chế độ định vị GPS. Bạn có muốn mở cài đặt GPS?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -1740,6 +1891,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
+
+
 
     public void drawMarkerLBS(double lat, double lon, String name){
         LatLng loc = new LatLng(lat, lon);

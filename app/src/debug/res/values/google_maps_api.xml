@@ -22,6 +22,7 @@
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
         <!--AIzaSyDV2NNTw7RVFI8BAYTHJ_TyIkPUPq_niws-->
-        AIzaSyBcR6y_giPahewOFi2Hv78KpaBPLIZEut0
+        <!--AIzaSyBcR6y_giPahewOFi2Hv78KpaBPLIZEut0-->
+        AIzaSyDISJwas6OY0c3q7jyOhm62iTJ4eBqHZgA
     </string>
 </resources>

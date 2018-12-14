@@ -1,6 +1,9 @@
 package com.bkstek.stour.model;
 
-public class LBS{
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class LBS implements Parcelable {
     String name;
     String address;
     double lat;
@@ -16,6 +19,27 @@ public class LBS{
         this.tel = tel;
         this.open_time = open_time;
     }
+
+    protected LBS(Parcel in) {
+        name = in.readString();
+        address = in.readString();
+        lat = in.readDouble();
+        lon = in.readDouble();
+        tel = in.readString();
+        open_time = in.readString();
+    }
+
+    public static final Creator<LBS> CREATOR = new Creator<LBS>() {
+        @Override
+        public LBS createFromParcel(Parcel in) {
+            return new LBS(in);
+        }
+
+        @Override
+        public LBS[] newArray(int size) {
+            return new LBS[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -63,5 +87,20 @@ public class LBS{
 
     public void setOpen_time(String open_time) {
         this.open_time = open_time;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(address);
+        dest.writeDouble(lat);
+        dest.writeDouble(lon);
+        dest.writeString(tel);
+        dest.writeString(open_time);
     }
 }

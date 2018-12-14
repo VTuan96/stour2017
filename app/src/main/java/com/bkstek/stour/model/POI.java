@@ -13,6 +13,9 @@ public class POI {
     String VideoDir;
     String Audio;
 
+    public POI() {
+    }
+
     public String getVideoDir() {
         return VideoDir;
     }
@@ -78,6 +81,5 @@ public class POI {
     public void setName(String name) {
         Name = name;
     }
-
 
 }

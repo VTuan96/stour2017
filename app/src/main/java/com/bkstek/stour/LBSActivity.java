@@ -3,6 +3,7 @@ package com.bkstek.stour;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,6 +12,9 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -203,5 +207,25 @@ public class LBSActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return byteArrayOutputStream.toString();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_around_lbs, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.mnuConfig){
+            Intent intent = new Intent(context, MapsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(CommonDefine.LIST_LBS, (ArrayList<? extends Parcelable>) lbsList);
+            intent.putExtra(CommonDefine.LBS_BUNDLE, bundle);
+            intent.putExtra(CommonDefine.FUNC, CommonDefine.AROUND_HERE);
+            context.startActivity(intent);
+        }
+        return true;
     }
 }
